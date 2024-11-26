@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<!-- saved from url=(0051)https://foad.ensicaen.fr/mod/page/view.php?id=14022 -->
+<html dir="ltr" lang="en" xml:lang="en" class="yui3-js-enabled"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>IA: Lab 3: Adversarial Search Problem with Pac-Man | Moodle ENSICAEN</title>
+    <link rel="shortcut icon" href="https://foad.ensicaen.fr/theme/image.php/classic/theme/1732489503/favicon">
+    
+<meta name="keywords" content="moodle, IA: Lab 3: Adversarial Search Problem with Pac-Man | Moodle ENSICAEN">
+<link rel="stylesheet" type="text/css" href="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/combo"><script charset="utf-8" id="yui_3_17_2_1_1732539254493_8" src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/combo(1)" async=""></script><script charset="utf-8" id="yui_3_17_2_1_1732539254493_19" src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/combo(2)" async=""></script><script id="firstthemesheet" type="text/css">/** Required in order to fix style inclusion problems in IE with YUI **/</script><link rel="stylesheet" type="text/css" href="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/styles.php">
+<link rel="stylesheet" type="text/css" href="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/styles(1).php">
+<script>
+//<![CDATA[
+var M = {}; M.yui = {};
+M.pageloadstarttime = new Date();
+M.cfg = {"wwwroot":"https:\/\/foad.ensicaen.fr","homeurl":{},"sesskey":"5w0K0l8BdV","sessiontimeout":"7200","sessiontimeoutwarning":1200,"themerev":"1732489503","slasharguments":1,"theme":"classic","iconsystemmodule":"core\/icon_system_fontawesome","jsrev":"1732489503","admin":"admin","svgicons":true,"usertimezone":"Europe\/Paris","language":"en","courseId":47,"courseContextId":1049,"contextid":25874,"contextInstanceId":14022,"langrev":1732489503,"templaterev":"1732489503"};var yui1ConfigFn = function(me) {if(/-skin|reset|fonts|grids|base/.test(me.name)){me.type='css';me.path=me.path.replace(/\.js/,'.css');me.path=me.path.replace(/\/yui2-skin/,'/assets/skins/sam/yui2-skin')}};
+var yui2ConfigFn = function(me) {var parts=me.name.replace(/^moodle-/,'').split('-'),component=parts.shift(),module=parts[0],min='-min';if(/-(skin|core)$/.test(me.name)){parts.pop();me.type='css';min=''}
+if(module){var filename=parts.join('-');me.path=component+'/'+module+'/'+filename+min+'.'+me.type}else{me.path=component+'/'+component+'.'+me.type}};
+YUI_config = {"debug":false,"base":"https:\/\/foad.ensicaen.fr\/lib\/yuilib\/3.17.2\/","comboBase":"https:\/\/foad.ensicaen.fr\/theme\/yui_combo.php?","combine":true,"filter":null,"insertBefore":"firstthemesheet","groups":{"yui2":{"base":"https:\/\/foad.ensicaen.fr\/lib\/yuilib\/2in3\/2.9.0\/build\/","comboBase":"https:\/\/foad.ensicaen.fr\/theme\/yui_combo.php?","combine":true,"ext":false,"root":"2in3\/2.9.0\/build\/","patterns":{"yui2-":{"group":"yui2","configFn":yui1ConfigFn}}},"moodle":{"name":"moodle","base":"https:\/\/foad.ensicaen.fr\/theme\/yui_combo.php?m\/1732489503\/","combine":true,"comboBase":"https:\/\/foad.ensicaen.fr\/theme\/yui_combo.php?","ext":false,"root":"m\/1732489503\/","patterns":{"moodle-":{"group":"moodle","configFn":yui2ConfigFn}},"filter":null,"modules":{"moodle-core-lockscroll":{"requires":["plugin","base-build"]},"moodle-core-languninstallconfirm":{"requires":["base","node","moodle-core-notification-confirm","moodle-core-notification-alert"]},"moodle-core-event":{"requires":["event-custom"]},"moodle-core-actionmenu":{"requires":["base","event","node-event-simulate"]},"moodle-core-dragdrop":{"requires":["base","node","io","dom","dd","event-key","event-focus","moodle-core-notification"]},"moodle-core-tooltip":{"requires":["base","node","io-base","moodle-core-notification-dialogue","json-parse","widget-position","widget-position-align","event-outside","cache-base"]},"moodle-core-chooserdialogue":{"requires":["base","panel","moodle-core-notification"]},"moodle-core-maintenancemodetimer":{"requires":["base","node"]},"moodle-core-formchangechecker":{"requires":["base","event-focus","moodle-core-event"]},"moodle-core-handlebars":{"condition":{"trigger":"handlebars","when":"after"}},"moodle-core-notification":{"requires":["moodle-core-notification-dialogue","moodle-core-notification-alert","moodle-core-notification-confirm","moodle-core-notification-exception","moodle-core-notification-ajaxexception"]},"moodle-core-notification-dialogue":{"requires":["base","node","panel","escape","event-key","dd-plugin","moodle-core-widget-focusafterclose","moodle-core-lockscroll"]},"moodle-core-notification-alert":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-confirm":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-exception":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-ajaxexception":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-popuphelp":{"requires":["moodle-core-tooltip"]},"moodle-core-blocks":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification"]},"moodle-core_availability-form":{"requires":["base","node","event","event-delegate","panel","moodle-core-notification-dialogue","json"]},"moodle-backup-backupselectall":{"requires":["node","event","node-event-simulate","anim"]},"moodle-backup-confirmcancel":{"requires":["node","node-event-simulate","moodle-core-notification-confirm"]},"moodle-course-dragdrop":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification","moodle-course-coursebase","moodle-course-util"]},"moodle-course-management":{"requires":["base","node","io-base","moodle-core-notification-exception","json-parse","dd-constrain","dd-proxy","dd-drop","dd-delegate","node-event-delegate"]},"moodle-course-util":{"requires":["node"],"use":["moodle-course-util-base"],"submodules":{"moodle-course-util-base":{},"moodle-course-util-section":{"requires":["node","moodle-course-util-base"]},"moodle-course-util-cm":{"requires":["node","moodle-course-util-base"]}}},"moodle-course-categoryexpander":{"requires":["node","event-key"]},"moodle-form-dateselector":{"requires":["base","node","overlay","calendar"]},"moodle-form-passwordunmask":{"requires":[]},"moodle-form-shortforms":{"requires":["node","base","selector-css3","moodle-core-event"]},"moodle-question-chooser":{"requires":["moodle-core-chooserdialogue"]},"moodle-question-preview":{"requires":["base","dom","event-delegate","event-key","core_question_engine"]},"moodle-question-searchform":{"requires":["base","node"]},"moodle-availability_completion-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_date-form":{"requires":["base","node","event","io","moodle-core_availability-form"]},"moodle-availability_grade-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_group-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_grouping-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_profile-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-mod_assign-history":{"requires":["node","transition"]},"moodle-mod_quiz-modform":{"requires":["base","node","event"]},"moodle-mod_quiz-autosave":{"requires":["base","node","event","event-valuechange","node-event-delegate","io-form"]},"moodle-mod_quiz-toolboxes":{"requires":["base","node","event","event-key","io","moodle-mod_quiz-quizbase","moodle-mod_quiz-util-slot","moodle-core-notification-ajaxexception"]},"moodle-mod_quiz-questionchooser":{"requires":["moodle-core-chooserdialogue","moodle-mod_quiz-util","querystring-parse"]},"moodle-mod_quiz-dragdrop":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification","moodle-mod_quiz-quizbase","moodle-mod_quiz-util-base","moodle-mod_quiz-util-page","moodle-mod_quiz-util-slot","moodle-course-util"]},"moodle-mod_quiz-util":{"requires":["node","moodle-core-actionmenu"],"use":["moodle-mod_quiz-util-base"],"submodules":{"moodle-mod_quiz-util-base":{},"moodle-mod_quiz-util-slot":{"requires":["node","moodle-mod_quiz-util-base"]},"moodle-mod_quiz-util-page":{"requires":["node","moodle-mod_quiz-util-base"]}}},"moodle-mod_quiz-quizbase":{"requires":["base","node"]},"moodle-message_airnotifier-toolboxes":{"requires":["base","node","io"]},"moodle-filter_glossary-autolinker":{"requires":["base","node","io-base","json-parse","event-delegate","overlay","moodle-core-event","moodle-core-notification-alert","moodle-core-notification-exception","moodle-core-notification-ajaxexception"]},"moodle-filter_mathjaxloader-loader":{"requires":["moodle-core-event"]},"moodle-editor_atto-editor":{"requires":["node","transition","io","overlay","escape","event","event-simulate","event-custom","node-event-html5","node-event-simulate","yui-throttle","moodle-core-notification-dialogue","moodle-core-notification-confirm","moodle-editor_atto-rangy","handlebars","timers","querystring-stringify"]},"moodle-editor_atto-plugin":{"requires":["node","base","escape","event","event-outside","handlebars","event-custom","timers","moodle-editor_atto-menu"]},"moodle-editor_atto-menu":{"requires":["moodle-core-notification-dialogue","node","event","event-custom"]},"moodle-editor_atto-rangy":{"requires":[]},"moodle-report_eventlist-eventfilter":{"requires":["base","event","node","node-event-delegate","datatable","autocomplete","autocomplete-filters"]},"moodle-report_loglive-fetchlogs":{"requires":["base","event","node","io","node-event-delegate"]},"moodle-gradereport_history-userselector":{"requires":["escape","event-delegate","event-key","handlebars","io-base","json-parse","moodle-core-notification-dialogue"]},"moodle-qbank_editquestion-chooser":{"requires":["moodle-core-chooserdialogue"]},"moodle-tool_capability-search":{"requires":["base","node"]},"moodle-tool_lp-dragdrop-reorder":{"requires":["moodle-core-dragdrop"]},"moodle-tool_monitor-dropdown":{"requires":["base","event","node"]},"moodle-assignfeedback_editpdf-editor":{"requires":["base","event","node","io","graphics","json","event-move","event-resize","transition","querystring-stringify-simple","moodle-core-notification-dialog","moodle-core-notification-alert","moodle-core-notification-warning","moodle-core-notification-exception","moodle-core-notification-ajaxexception"]},"moodle-atto_accessibilitychecker-button":{"requires":["color-base","moodle-editor_atto-plugin"]},"moodle-atto_accessibilityhelper-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_align-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_bold-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_charmap-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_clear-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_collapse-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_emojipicker-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_emoticon-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_equation-button":{"requires":["moodle-editor_atto-plugin","moodle-core-event","io","event-valuechange","tabview","array-extras"]},"moodle-atto_h5p-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_html-codemirror":{"requires":["moodle-atto_html-codemirror-skin"]},"moodle-atto_html-beautify":{},"moodle-atto_html-button":{"requires":["promise","moodle-editor_atto-plugin","moodle-atto_html-beautify","moodle-atto_html-codemirror","event-valuechange"]},"moodle-atto_image-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_indent-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_italic-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_link-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_managefiles-usedfiles":{"requires":["node","escape"]},"moodle-atto_managefiles-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_media-button":{"requires":["moodle-editor_atto-plugin","moodle-form-shortforms"]},"moodle-atto_noautolink-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_orderedlist-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_recordrtc-recording":{"requires":["moodle-atto_recordrtc-button"]},"moodle-atto_recordrtc-button":{"requires":["moodle-editor_atto-plugin","moodle-atto_recordrtc-recording"]},"moodle-atto_rtl-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_strike-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_subscript-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_superscript-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_table-button":{"requires":["moodle-editor_atto-plugin","moodle-editor_atto-menu","event","event-valuechange"]},"moodle-atto_teamsmeeting-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_title-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_underline-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_undo-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_unorderedlist-button":{"requires":["moodle-editor_atto-plugin"]}}},"gallery":{"name":"gallery","base":"https:\/\/foad.ensicaen.fr\/lib\/yuilib\/gallery\/","combine":true,"comboBase":"https:\/\/foad.ensicaen.fr\/theme\/yui_combo.php?","ext":false,"root":"gallery\/1732489503\/","patterns":{"gallery-":{"group":"gallery"}}}},"modules":{"core_filepicker":{"name":"core_filepicker","fullpath":"https:\/\/foad.ensicaen.fr\/lib\/javascript.php\/1732489503\/repository\/filepicker.js","requires":["base","node","node-event-simulate","json","async-queue","io-base","io-upload-iframe","io-form","yui2-treeview","panel","cookie","datatable","datatable-sort","resize-plugin","dd-plugin","escape","moodle-core_filepicker","moodle-core-notification-dialogue"]},"core_comment":{"name":"core_comment","fullpath":"https:\/\/foad.ensicaen.fr\/lib\/javascript.php\/1732489503\/comment\/comment.js","requires":["base","io-base","node","json","yui2-animation","overlay","escape"]},"mathjax":{"name":"mathjax","fullpath":"https:\/\/cdn.jsdelivr.net\/npm\/mathjax@2.7.9\/MathJax.js?delayStartupUntil=configured"}}};
+M.yui.loader = {modules: {}};
+
+//]]>
+</script>
+
+<meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="core/first" src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/requirejs.php"></script><script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    config: ["Accessible.js", "Safe.js"],
+    errorSettings: { message: ["!"] },
+    skipStartupTypeset: true,
+    messageStyle: "none"
+});
+</script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="jquery" src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/javascript.php"></script></head>
+<body id="page-mod-page-view" class="format-onetopic limitedwidth  path-mod path-mod-page chrome dir-ltr lang-en yui-skin-sam yui3-skin-sam foad-ensicaen-fr pagelayout-incourse course-47 context-25874 cmid-14022 cm-type-page category-9  jsenabled">
+
+<div id="page-wrapper" class="d-print-block">
+
+    <div>
+    <a class="sr-only sr-only-focusable" href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#maincontent">Skip to main content</a>
+</div><script src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/javascript(1).php"></script>
+<script src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/combo(3)"></script><script src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/javascript(2).php"></script>
+<script>
+//<![CDATA[
+document.body.className += ' jsenabled';
+//]]>
+</script>
+
+
+
+    <nav class="fixed-top navbar navbar-bootswatch navbar-expand moodle-has-zindex">
+    
+        <a href="https://foad.ensicaen.fr/my/" class="navbar-brand d-flex align-items-center m-1 p-0 aabtn">
+                <img src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/Logensicaen_carre_petit.jpg" class="logo mr-1" alt="Moodle ENSICAEN">
+        </a>
+    
+        <ul class="navbar-nav d-none d-md-flex">
+            <!-- custom_menu -->
+            
+            <!-- page_heading_menu -->
+            
+        </ul>
+        <div id="usernavigation" class="navbar-nav my-1 ml-auto">
+            <div class="divider border-left h-50 align-self-center mx-1"></div>
+            
+            <div class="popover-region collapsed popover-region-notifications" id="nav-notification-popover-container" data-userid="13112" data-region="popover-region">
+    <div class="popover-region-toggle nav-link icon-no-margin" data-region="popover-region-toggle" role="button" aria-controls="popover-region-container-67447376465996744737643c5254" aria-haspopup="true" aria-label=" Show notification window with no new notifications   " tabindex="0">
+                <i class="icon fa fa-bell-o fa-fw " title="Toggle notifications menu" role="img" aria-label="Toggle notifications menu"></i>
+        <div class="count-container hidden" data-region="count-container" aria-hidden="true">
+            0
+        </div>
+
+    </div>
+    <div id="popover-region-container-67447376465996744737643c5254" class="popover-region-container" data-region="popover-region-container" aria-expanded="false" aria-hidden="true" aria-label="Notification window" role="region">
+        <div class="popover-region-header-container">
+            <h3 class="popover-region-header-text" data-region="popover-region-header-text">Notifications</h3>
+            <div class="popover-region-header-actions" data-region="popover-region-header-actions">        <a class="mark-all-read-button" href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#" title="Mark all as read" data-action="mark-all-read" role="button" aria-label="Mark all as read">
+            <span class="normal-icon"><i class="icon fa fa-check fa-fw " aria-hidden="true"></i></span>
+            <span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+        </a>
+            <a href="https://foad.ensicaen.fr/message/notificationpreferences.php" title="Notification preferences" aria-label="Notification preferences">
+                <i class="icon fa fa-cog fa-fw " aria-hidden="true"></i></a>
+</div>
+        </div>
+        <div class="popover-region-content-container" data-region="popover-region-content-container">
+            <div class="popover-region-content" data-region="popover-region-content">
+                        <div class="all-notifications" data-region="all-notifications" role="log" aria-busy="false" aria-atomic="false" aria-relevant="additions"></div>
+        <div class="empty-message" tabindex="0" data-region="empty-message">You have no notifications</div>
+
+            </div>
+            <span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+        </div>
+                <a class="see-all-link" href="https://foad.ensicaen.fr/message/output/popup/notifications.php">
+                    <div class="popover-region-footer-container">
+                        <div class="popover-region-seeall-text">See all</div>
+                    </div>
+                </a>
+    </div>
+</div><div class="popover-region collapsed" data-region="popover-region-messages">
+    <a id="message-drawer-toggle-6744737646b8e6744737643c5255" class="nav-link popover-region-toggle position-relative icon-no-margin" href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#" role="button">
+        <i class="icon fa fa-comment-o fa-fw " title="Toggle messaging drawer" role="img" aria-label="Toggle messaging drawer"></i>
+        <div class="count-container " data-region="count-container">
+            <span aria-hidden="true">1</span>
+            <span class="sr-only">There are 1 unread conversations</span>
+        </div>
+    </a>
+    <span class="sr-only sr-only-focusable" data-region="jumpto" tabindex="-1"></span></div>
+            <div class="d-flex align-items-stretch usermenu-container" data-region="usermenu">
+                <div class="usermenu"><div class="action-menu moodle-actionmenu nowrap-items" id="action-menu-0" data-enhance="moodle-core-actionmenu">
+
+        <div class="menubar d-flex " id="action-menu-0-menubar">
+
+            
+
+
+                <div class="action-menu-trigger">
+                    <div class="dropdown">
+                        <a href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#" tabindex="0" class="nav-link dropdown-toggle icon-no-margin" id="action-menu-toggle-0" aria-label="User menu" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" aria-controls="action-menu-0-menu">
+                            
+                            <span class="userbutton"><span class="usertext mr-1">Alexandre Arezes</span><span class="avatars"><span class="avatar current"><span class="userinitials size-35">AA</span></span></span></span>
+                                
+                            <b class="caret"></b>
+                        </a>
+                            <div class="dropdown-menu menu dropdown-menu-right" id="action-menu-0-menu" data-rel="menu-content" aria-labelledby="action-menu-toggle-0" role="menu">
+                                                                <a href="https://foad.ensicaen.fr/user/profile.php" class="dropdown-item menu-action" role="menuitem" data-title="profile,moodle" tabindex="-1" aria-labelledby="actionmenuaction-1">
+                                <span class="menu-action-text" id="actionmenuaction-1">Profile</span>
+                        </a>
+                    <div class="dropdown-divider" role="presentation"><span class="filler">&nbsp;</span></div>
+                                                                <a href="https://foad.ensicaen.fr/grade/report/overview/index.php" class="dropdown-item menu-action" role="menuitem" data-title="grades,grades" tabindex="-1" aria-labelledby="actionmenuaction-2">
+                                <span class="menu-action-text" id="actionmenuaction-2">Grades</span>
+                        </a>
+                                                                <a href="https://foad.ensicaen.fr/calendar/view.php?view=month" class="dropdown-item menu-action" role="menuitem" data-title="calendar,core_calendar" tabindex="-1" aria-labelledby="actionmenuaction-3">
+                                <span class="menu-action-text" id="actionmenuaction-3">Calendar</span>
+                        </a>
+                                                                <a href="https://foad.ensicaen.fr/message/index.php" class="dropdown-item menu-action" role="menuitem" data-title="messages,message" tabindex="-1" aria-labelledby="actionmenuaction-4">
+                                <span class="menu-action-text" id="actionmenuaction-4">Messages</span>
+                        </a>
+                                                                <a href="https://foad.ensicaen.fr/user/files.php" class="dropdown-item menu-action" role="menuitem" data-title="privatefiles,moodle" tabindex="-1" aria-labelledby="actionmenuaction-5">
+                                <span class="menu-action-text" id="actionmenuaction-5">Private files</span>
+                        </a>
+                                                                <a href="https://foad.ensicaen.fr/reportbuilder/index.php" class="dropdown-item menu-action" role="menuitem" data-title="reports,core_reportbuilder" tabindex="-1" aria-labelledby="actionmenuaction-6">
+                                <span class="menu-action-text" id="actionmenuaction-6">Reports</span>
+                        </a>
+                    <div class="dropdown-divider" role="presentation"><span class="filler">&nbsp;</span></div>
+                                                                <a href="https://foad.ensicaen.fr/user/preferences.php" class="dropdown-item menu-action" role="menuitem" data-title="preferences,moodle" tabindex="-1" aria-labelledby="actionmenuaction-7">
+                                <span class="menu-action-text" id="actionmenuaction-7">Preferences</span>
+                        </a>
+                    <div class="dropdown-divider" role="presentation"><span class="filler">&nbsp;</span></div>
+                                                                <a href="https://foad.ensicaen.fr/login/logout.php?sesskey=5w0K0l8BdV" class="dropdown-item menu-action" role="menuitem" data-title="logout,moodle" tabindex="-1" aria-labelledby="actionmenuaction-8">
+                                <span class="menu-action-text" id="actionmenuaction-8">Log out</span>
+                        </a>
+                            </div>
+                    </div>
+                </div>
+
+        </div>
+
+</div></div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="page" class="container-fluid d-print-block">
+        <header id="page-header" class="row">
+    <div class="col-12 pt-3 pb-3">
+        <div class="card ">
+            <div class="card-body ">
+                <div class="d-flex align-items-center">
+                    <div class="mr-auto">
+                    <div class="page-context-header"><div class="page-header-headings"><h1>2A :: Intelligence artificielle</h1></div></div>
+                    </div>
+                    <div class="header-actions-container flex-shrink-0" data-region="header-actions-container">
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap">
+                    <div id="page-navbar">
+                        <nav aria-label="Navigation bar">
+    <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="https://foad.ensicaen.fr/my/">Dashboard</a>
+                </li>
+        
+                <li class="breadcrumb-item">
+                    <a href="https://foad.ensicaen.fr/course/index.php">Courses</a>
+                </li>
+        
+                <li class="breadcrumb-item">
+                    <a href="https://foad.ensicaen.fr/course/index.php?categoryid=3">Formation Initiale sous statut Etudiant</a>
+                </li>
+        
+                <li class="breadcrumb-item">
+                    <a href="https://foad.ensicaen.fr/course/index.php?categoryid=7">Spécialité Informatique</a>
+                </li>
+        
+                <li class="breadcrumb-item">
+                    <a href="https://foad.ensicaen.fr/course/index.php?categoryid=9">2ème année</a>
+                </li>
+        
+                <li class="breadcrumb-item">
+                    <a href="https://foad.ensicaen.fr/course/view.php?id=47&amp;section=0" title="2A :: Intelligence artificielle">IA</a>
+                </li>
+        
+                <li class="breadcrumb-item">
+                    <a href="https://foad.ensicaen.fr/course/view.php?id=47&amp;section=4">Labs</a>
+                </li>
+        
+                <li class="breadcrumb-item">
+                    <a href="https://foad.ensicaen.fr/mod/page/view.php?id=14022" aria-current="page" title="Page">Lab 3: Adversarial Search Problem with Pac-Man</a>
+                </li>
+        </ol>
+</nav>
+                    </div>
+                    <div class="ml-auto d-flex">
+                        
+                    </div>
+                    <div id="course-header">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div id="page-content" class="row  blocks-pre   blocks-post  d-print-block">
+            <div id="region-main-box" class="region-main">
+                <section id="region-main" class="region-main-content" aria-label="Content">
+                    <span class="notifications" id="user-notifications"></span>
+                        <span id="maincontent"></span>
+                            <h2>Lab 3: Adversarial Search Problem with Pac-Man</h2>
+                        <div class="activity-header" data-for="page-activity-header"></div>
+                    <div role="main"><div class="box py-3 generalbox center clearfix"><div class="no-overflow"><table width="100%" cellspacing="0" cellpadding="0" border="1">
+    <tbody>
+        <tr>
+            <td>
+                <table style=" border: 1px solid black;background-color:#40bfc1;" width="100%" cellpadding="10">
+                    <tbody>
+                        <tr>
+                            <td><img src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/ensicaen.png" alt="ENSICAEN"></td>
+                            <td width="100%">
+                                <h3><b>ENSICAEN - Computer Science Department</b></h3>
+                                <hr style="color:black; background-color:black; height:3px;">
+                                <h4>CS 2I1AE1: Artificial Intelligence</h4>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+<h1 style="color: rgb(64, 191, 193); font-size: 28px; font-weight: bold; margin-bottom: 5px; text-align: center;">Lab 3: Adversarial Search Problem with Pac-Man</h1>
+<p style="text-align: center;">(<i>This lab assignment is adapted from the course<br>”Intro to AI” by John DeNero and Dan Klein at Berkeley</i>)</p>
+
+<h1 style="font-size: 20px; text-align: center;">Duration: 1 session</h1>
+
+<h2 style="color: #40bfc1; font-weight: 600; font-size: 20px;line-height: 90%; border-bottom: 1px solid #40bfc1; margin-top: 30px;">Table of Contents</h2>
+<ol>
+    <li><a href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#Introduction">Introduction</a></li>
+    <li><a href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#Instructions">General Instructions</a></li>
+    <li><a href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#Q1">Exercise 1 (<span style="color: rgb(34,139,34);">Easy</span>): Minimax Algorithm With n Ghosts</a></li>
+    <li><a href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#Q2">Exercise 2 (<span style="color: rgb(255,165,0);">Medium</span>): Alphabeta Algorithm</a></li>
+    <li><a href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#Q3">Exercise 3 (<span style="color: rgb(255,165,0);">Medium</span>): Expectimax Algorithm</a></li>
+    <li><a href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#Q4">Exercise 4 (<span style="color: rgb(255,165,0);">Medium</span>): Evaluation Function</a></li>
+
+</ol>
+
+
+<p>In this project, you will design agents for the classic version of Pac-Man, including ghosts. Along the way, you will implement minimax, alphabeta, and expectimax search and design an evaluation function.</p>
+
+
+
+
+
+
+<h2 style="color: #40bfc1; font-weight: 600; font-size: 20px;line-height: 90%; border-bottom: 1px solid #40bfc1; margin-top: 30px;"><a name="Introduction"></a>Introduction</h2>
+<p>The player controls Pac-Man through a maze, eating pac-dots. When all pac-dots are eaten, Pac-Man win. Two ghost enemies roam the maze, trying to catch Pac-Man. If a ghost touches Pac-Man, he loses. Near the corners of the maze are larger dots known as
+    power pellets that provide Pac-Man with the temporary ability to eat the ghosts. When a ghost is eaten, it is regenerated in the center box. Ghosts flash white to signal that they are about to become dangerous again.</p>
+
+<p style="text-indent: 0cm; margin-top: 0cm; line-height: 100%" align="center">
+    <img src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/pacman.png" alt="Classic Pacman&#39;s world." class="img-responsive atto_image_button_text-bottom" width="451" height="249">
+    <br><i>Figure 1: Classic Pac-Man's world.</i>
+</p>
+
+
+
+
+<h2 style="color: #40bfc1; font-weight: 600; font-size: 20px;line-height: 90%; border-bottom: 1px solid #40bfc1; margin-top: 30px;"><a name="Instructions"></a>General instructions</h2>
+
+<p></p>
+<p align="left">Download the following archive: <a href="https://foad.ensicaen.fr/pluginfile.php/25874/mod_page/content/43/lab3.zip?time=1732523381352">Lab3.zip</a><br></p>
+<p>This archive contains all the code and supporting files.</p>
+<p>First, play a game of classic Pac-Man using the keyboard arrows if you are not familar with this game:</p>
+<pre>./pacman.py<br><br></pre>
+
+
+<h2 style="color: #40bfc1; font-weight: 600; font-size: 20px;line-height: 90%; border-bottom: 1px solid #40bfc1; margin-top: 30px;"><a name="Q1"></a>Exercise 1: Minimax Algorithm With n Ghosts</h2>
+
+<p>Write the agent <code>MinimaxAgentN</code> considering an arbitrary number of ghosts. To help you write the code, the class <code>MinimaxAgent1</code> provides an example assuming only one ghost. You can try our algorithm:</p>
+
+<pre>python pacman.py -p MinimaxAgent1 -l minimaxClassic -a depth=3 --number_of_ghosts=1
+python pacman.py -p MinimaxAgent1 -l smallClassic -a depth=3 --number_of_ghosts=1
+python pacman.py -p MinimaxAgent1 -l minimaxClassic -a depth=3 --number_of_ghosts=1 -q -n 10
+</pre>
+
+<p>The function <code>getAction(self, gameState)</code> you have to write should return the chosen action among the <code>legalActions()</code> (ie. <code>East, West, North, South</code>). It uses a <code>GameState</code> instance as argument which provides
+    the following variables and methods:</p>
+
+<table width="100%" cellspacing="0" cellpadding="4">
+    <tbody>
+        <tr>
+            <th colspan="2" style="border: 1px solid #000000; padding: 0.1cm" width="100%" valign="top">
+                <p style="text-align: center;"><code>class GameState</code></p>
+            </th>
+        </tr>
+        <tr>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm" valign="top">
+                <p><code>getLegalActions(agentIndex)</code></p>
+            </td>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p>returns the list of possible directions for the agent among <code>('West', 'North', 'South', 'East')</code>.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm" valign="top">
+                <p><code>generateSuccessor(agentIndex,action)</code></p>
+            </td>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p>returns the successor state after the specified agent takes the specified action.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm" valign="top">
+                <p><code>getNumberOfAgents()</code></p>
+            </td>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p>returns the number of the agents.</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The class <code>MultiAgentSearchAgent</code> (that <code>MinimaxAgentN</code> inherits) provides:</p>
+
+<table width="100%" cellspacing="0" cellpadding="4">
+    <tbody>
+        <tr>
+            <th colspan="2" style="border: 1px solid #000000; padding: 0.1cm" width="100%" valign="top">
+                <p style="text-align: center;"><code>class MinimaxAgentNultiAgentSearchAgent</code></p>
+            </th>
+        </tr>
+        <tr valign="top">
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><code>isTerminalNode(gameState, depth)</code></p>
+            </td>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p>returns true if the current state is a terminal node; either Pac-Man wins or loses or depth = 0.</p>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><code>self.depth</code></p>
+            </td>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p>contains the search depth given by the user.</p>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><code>self.evaluationFunction(gameState)</code></p>
+            </td>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p>returns the utility value for the current game state (the current score).</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<p><b><span class="" style="color: rgb(239, 69, 64);"><br></span></b></p>
+<p><b><span class="" style="color: rgb(239, 69, 64);">Important</span></b><span class="" style="color: rgb(239, 69, 64);">: A single depth value is considered to be one Pac-Man move and all the ghosts' responses, so depth 2 will involve Pac-Man and each ghost moving two times. Pac-Man is always agent 0, and the agents move in order of increasing agent index.</span></p>
+
+<p>Test your code on:</p>
+<pre>python pacman.py -p MinimaxAgentN -l minimaxClassic -a depth=3 --number_of_ghosts=3 --frameTime=0.5
+python pacman.py -p MinimaxAgentN -l smallClassic -a depth=4 -k 3
+python pacman.py -p MinimaxAgentN -l minimaxClassic -a depth=4 -k 2 -q -n 10
+</pre>
+
+<p>Try variation on depth value (<tt>-a depth=7</tt>).</p>
+
+<p><strong>Expected results</strong></p>
+<ul>
+    <li>
+        <p>The minimax values of the initial state in the <tt>minimaxClassic</tt> layout are 9, 8, 7, -492 for depths 1, 2, 3 and 4 respectively. Note that your minimax agent will often win (6/10 games for us with depth 4).</p>
+    </li>
+
+    <li>
+        <p>Depth 4 should be pretty quick, but depth 5 or 6 will be slow. Don't worry, the next exercise will speed up the search somewhat.</p>
+    </li>
+
+    <li>
+        <p>On larger boards such as <tt>openClassic</tt> and <tt>mediumClassic</tt> (the default), you'll find Pac-Man to be good at not dying, but quite bad at winning. He'll often thrash around without making progress. He might even thrash around right
+            next to a dot without eating it because he doesn't know where he would go after eating that dot. Don't worry if you see this behavior, exercise 3 will clean up all of these issues.</p>
+    </li>
+</ul>
+
+
+
+
+
+
+
+
+
+<h2 style="color: #40bfc1; font-weight: 600; font-size: 20px;line-height: 90%; border-bottom: 1px solid #40bfc1; margin-top: 30px;"><a name="Q2"></a>Exercise 2: Alphabeta algorithm</h2>
+
+<p>Make a new agent that uses alpha-beta pruning to explore more efficiently the minimax tree, in <code>AlphaBetaAgent</code>. You should see a speed-up (perhaps depth 3 alpha-beta will run as fast as depth 2 minimax).</p>
+<pre>python pacman.py -p AlphaBetaAgent -l smallClassic -a depth=3 -k 2
+python pacman.py -p AlphaBetaAgent -l smallClassic -a depth=4 -k 3
+python pacman.py -p AlphaBetaAgent -l minimaxClassic -a depth=7 -k 2
+python pacman.py -p AlphaBetaAgent -l minimaxClassic -a depth=7 -k 2 -q -n 10
+</pre>
+
+<p>The <code>AlphaBetaAgent</code> minimax values should be identical to the <code>MinimaxAgent</code> minimax values, although the actions it selects can vary because of different tie-breaking behavior. So, the minimax values of the initial state in
+    the <tt>minimaxClassic</tt> layout are 9, 8, 7 and -492 for depths 1, 2, 3 and 4 respectively and 2 ghosts.</p>
+
+
+
+
+<h2 style="color: #40bfc1; font-weight: 600; font-size: 20px;line-height: 90%; border-bottom: 1px solid #40bfc1; margin-top: 30px;"><a name="Q3"></a>Exercise 3: Expectimax Algorithm</h2>
+
+<p>Random ghosts are of course not optimal minimax agents, and so modeling them with minimax search may not be appropriate. Fill in <code>ExpectimaxAgent</code>, where your agent will no longer take the min over all ghost actions, but the expectation according
+    to your agent's model of how the ghosts act.</p>
+
+<p>You should now observe a more cavalier approach in close quarters with ghosts. In particular, if Pac-Man perceives that he could be trapped but might escape to grab a few more pieces of food, he'll at least try.
+</p>
+<pre>python pacman.py -p ExpectimaxAgent -l smallClassic -a depth=3 -k 3
+python pacman.py -p ExpectimaxAgent -l minimaxClassic -a depth=4 -k 2
+python pacman.py -p ExpectimaxAgent -l minimaxClassic -a depth=4 -k 2 -q -n 10
+</pre>
+
+<p>Investigate the results of these two scenarios:</p>
+<pre>python pacman.py -p MinimaxAgentN -l trappedClassic -a depth=3 -q -n 10
+python pacman.py -p ExpectimaxAgent -l trappedClassic -a depth=3 -q -n 10
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+<h2 style="color: #40bfc1; font-weight: 600; font-size: 20px;line-height: 90%; border-bottom: 1px solid #40bfc1; margin-top: 30px;"><a name="Q4"></a>Exercise 4: Evaluation Function</h2>
+
+<p>Write a better evaluation function for Pac-Man in the provided function <code>MyEvaluationFunction</code> stub. The evaluation function should evaluate states. With a depth search of 2, your evaluation function should clear the <tt>smallClassic</tt> layout
+    with two random ghosts more than half the time and still run at a reasonable rate.</p>
+
+<pre>python pacman.py -p ExpectimaxAgent -l minimaxClassic -a evalFn=MyEvaluationFunction,depth=2 -k 3
+python pacman.py -p ExpectimaxAgent -l minimaxClassic -a evalFn=MyEvaluationFunction,depth=2 -k 3 -q -n 100 (our score 57/100)
+python pacman.py -p AlphaBetaAgent -l smallClassic -a evalFn=MyEvaluationFunction,depth=4 -k 3
+python pacman.py -p ExpectimaxAgent -l minimaxClassic -a evalFn=MyEvaluationFunction,depth=4 -k 3 -q -n 10 (our score 84/100)
+python pacman.py -p ExpectimaxAgent -l mediumClassic -a evalFn=MyEvaluationFunction,depth=3 -k 3 (our score 1863)
+</pre>
+
+<p><b>Hints:</b> One way you might want to write your evaluation function is to use a linear combination of features.</p>
+<p>List of useful methods and variables accessible via the class <code>GameState</code>:</p>
+
+<table width="100%" cellspacing="0" cellpadding="4">
+    <tbody>
+        <tr>
+            <th colspan="2" style="border: 1px solid #000000; padding: 0.1cm" width="100%" valign="top">
+                <p style="text-align: center;"><code>class GameState</code></p>
+            </th>
+        </tr>
+        <tr valign="top">
+            <td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><code>isWin()</code></p>
+            </td>
+            <td style="border: 1px solid #000000; padding: 0.1cm" width="61%">
+                <p style="text-indent: 0cm; margin-top: 0cm" align="left">
+                    returns true if Pac-Man has eaten all the dots.</p>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><code>isLose()</code></p>
+            </td>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p style="text-indent: 0cm; margin-top: 0cm" align="left">returns true if Pac-Man dies</p>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><code>getTotalFood()</code></p>
+            </td>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p>returns the initial number of food dots.</p>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><code>getNumberOfFood()</code></p>
+            </td>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p>returns the current number of food dots (not eaten).</p>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><code>getTotalGhosts()</code></p>
+            </td>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p>returns the number of ghosts.</p>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><code>getNumberOfKilledGhosts()</code></p>
+            </td>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p>returns the current number of ghosts killed by Pac-Man.</p>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><code>getTotalCapsules()</code></p>
+            </td>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p style="text-indent: 0cm; margin-top: 0cm" align="left">returns the initial number of capsules.</p>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+                <p><code>getNumberOfCapsules()</code></p>
+            </td>
+            <td style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+                <p style="text-indent: 0cm; margin-top: 0cm" align="left">returns the current number of capsules.</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+
+
+<h2 style="color: #40bfc1; font-weight: 600; font-size: 20px;line-height: 90%; border-bottom: 1px solid #40bfc1; margin-top: 30px;"><a name="Q5"></a></h2></div></div><div class="modified">Last modified: Monday, 25 November 2024, 10:41 AM</div></div>
+                    <div class="mt-5 mb-1 activity-navigation container-fluid">
+<div class="row">
+    <div class="col-md-4">        <div class="float-left">
+                <a href="https://foad.ensicaen.fr/mod/page/view.php?id=14021&amp;forceview=1" id="prev-activity-link" class="btn btn-link">◄ Lab 2: Constraint Satisfaction Problem with Sudoku</a>
+
+        </div>
+</div>
+    <div class="col-md-4">        <div class="mdl-align">
+            <div class="urlselect">
+    <form method="post" action="https://foad.ensicaen.fr/course/jumpto.php" class="form-inline" id="url_select_f6744737643c5265">
+        <input type="hidden" name="sesskey" value="5w0K0l8BdV">
+            <label for="jump-to-activity" class="sr-only">
+                Jump to...
+            </label>
+        <select id="jump-to-activity" class="custom-select urlselect" name="jump">
+                    <option value="" selected="">Jump to...</option>
+                    <option value="/mod/resource/view.php?id=12205&amp;forceview=1">Workbook</option>
+                    <option value="/mod/resource/view.php?id=13871&amp;forceview=1">Primer for the labs</option>
+                    <option value="/mod/resource/view.php?id=21480&amp;forceview=1">Démo Pacman avec Python et TkInter</option>
+                    <option value="/mod/page/view.php?id=14021&amp;forceview=1">Lab 2: Constraint Satisfaction Problem with Sudoku</option>
+                    <option value="/mod/page/view.php?id=14057&amp;forceview=1">Lab 1: State Space Search with Sokoban</option>
+        </select>
+            <noscript>
+                <input type="submit" class="btn btn-secondary ml-1" value="Go">
+            </noscript>
+    </form>
+</div>
+
+        </div>
+</div>
+    <div class="col-md-4">        <div class="float-right">
+                <a href="https://foad.ensicaen.fr/mod/page/view.php?id=14057&amp;forceview=1" id="next-activity-link" class="btn btn-link">Lab 1: State Space Search with Sokoban ►</a>
+
+        </div>
+</div>
+</div>
+</div>
+                    
+                </section>
+            </div>
+            <div class="columnleft blockcolumn  has-blocks ">
+                <section data-region="blocks-column" class="d-print-none" aria-label="Blocks">
+                    <aside id="block-region-side-pre" class="block-region" data-blockregion="side-pre" data-droptarget="1"><a href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#sb-1" class="sr-only sr-only-focusable">Skip Navigation</a>
+
+<section id="inst190" class=" block_navigation block  card mb-3" role="navigation" data-block="navigation" data-instance-id="190" aria-labelledby="instance-190-header">
+
+    <div class="card-body p-3">
+
+            <h5 id="instance-190-header" class="card-title d-inline">Navigation</h5>
+
+
+        <div class="card-text content mt-3">
+            <ul class="block_tree list" role="tree" data-ajax-loader="block_navigation/nav_loader"><li class="type_unknown depth_1 contains_branch" role="treeitem" aria-expanded="true" aria-owns="random6744737643c522_group" data-collapsible="false" aria-labelledby="random6744737643c521_label_1_1" tabindex="0" aria-selected="true"><p class="tree_item branch navigation_node" tabindex="-1"><a tabindex="-1" id="random6744737643c521_label_1_1" href="https://foad.ensicaen.fr/my/">Dashboard</a></p><ul id="random6744737643c522_group" role="group" tabindex="-1"><li class="type_setting depth_2 item_with_icon" role="treeitem" aria-labelledby="random6744737643c523_label_2_2" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c523_label_2_2" href="https://foad.ensicaen.fr/?redirect=0"><i class="icon fa fa-home fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">Site home</span></a></p></li><li class="type_course depth_2 contains_branch" role="treeitem" aria-expanded="false" aria-owns="random6744737643c525_group" aria-labelledby="random6744737643c523_label_2_3" tabindex="-1" aria-selected="false"><p class="tree_item branch" tabindex="-1"><span tabindex="-1" id="random6744737643c523_label_2_3" title="Plate-forme d&#39;enseignement Moodle de l&#39;ENSICAEN">Site pages</span></p><ul id="random6744737643c525_group" role="group" aria-hidden="true" tabindex="-1"><li class="type_custom depth_3 item_with_icon" role="treeitem" aria-labelledby="random6744737643c526_label_3_5" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c526_label_3_5" href="https://foad.ensicaen.fr/my/courses.php"><i class="icon fa fa-square fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">My courses</span></a></p></li><li class="type_unknown depth_3 item_with_icon" role="treeitem" aria-labelledby="random6744737643c526_label_3_6" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c526_label_3_6" href="https://foad.ensicaen.fr/blog/index.php"><i class="icon fa fa-square fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">Site blogs</span></a></p></li><li class="type_custom depth_3 item_with_icon" role="treeitem" aria-labelledby="random6744737643c526_label_3_7" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c526_label_3_7" href="https://foad.ensicaen.fr/badges/view.php?type=1"><i class="icon fa fa-square fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">Site badges</span></a></p></li><li class="type_setting depth_3 item_with_icon" role="treeitem" aria-labelledby="random6744737643c526_label_3_8" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c526_label_3_8" href="https://foad.ensicaen.fr/tag/search.php"><i class="icon fa fa-square fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">Tags</span></a></p></li><li class="type_activity depth_3 item_with_icon" role="treeitem" aria-labelledby="random6744737643c526_label_3_10" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c526_label_3_10" title="Forum" href="https://foad.ensicaen.fr/mod/forum/view.php?id=1456"><img class="icon navicon" alt="Forum" title="Forum" src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/monologo.svg" tabindex="-1"><span class="item-content-wrap" tabindex="-1">Brèves</span></a></p></li></ul></li><li class="type_system depth_2 contains_branch" role="treeitem" aria-expanded="true" aria-owns="random6744737643c5212_group" aria-labelledby="random6744737643c523_label_2_12" tabindex="-1" aria-selected="false"><p class="tree_item branch canexpand" tabindex="-1"><a tabindex="-1" id="random6744737643c523_label_2_12" href="https://foad.ensicaen.fr/my/courses.php">My courses</a></p><ul id="random6744737643c5212_group" role="group" tabindex="-1"><li class="type_course depth_3 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_20_116" data-node-key="116" data-node-type="20" aria-labelledby="random6744737643c5213_label_3_13" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_20_116" tabindex="-1"><a tabindex="-1" id="random6744737643c5213_label_3_13" title="Systèmes Embarqués - 1A ELEC" href="https://foad.ensicaen.fr/course/view.php?id=116">mcu</a></p></li><li class="type_course depth_3 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_20_46" data-node-key="46" data-node-type="20" aria-labelledby="random6744737643c5213_label_3_14" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_20_46" tabindex="-1"><a tabindex="-1" id="random6744737643c5213_label_3_14" title="Algorithmique avancée" href="https://foad.ensicaen.fr/course/view.php?id=46">Algo_avancée</a></p></li><li class="type_course depth_3 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_20_289" data-node-key="289" data-node-type="20" aria-labelledby="random6744737643c5213_label_3_15" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_20_289" tabindex="-1"><a tabindex="-1" id="random6744737643c5213_label_3_15" title="Base de données 1A INFO" href="https://foad.ensicaen.fr/course/view.php?id=289">BD1A</a></p></li><li class="type_course depth_3 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_20_5" data-node-key="5" data-node-type="20" aria-labelledby="random6744737643c5213_label_3_16" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_20_5" tabindex="-1"><a tabindex="-1" id="random6744737643c5213_label_3_16" title="Java et Programmation Objet" href="https://foad.ensicaen.fr/course/view.php?id=5">java</a></p></li><li class="type_course depth_3 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_20_286" data-node-key="286" data-node-type="20" aria-labelledby="random6744737643c5213_label_3_17" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_20_286" tabindex="-1"><a tabindex="-1" id="random6744737643c5213_label_3_17" title="Challenge de programmation" href="https://foad.ensicaen.fr/course/view.php?id=286">1a Info Projet</a></p></li><li class="type_course depth_3 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_20_296" data-node-key="296" data-node-type="20" aria-labelledby="random6744737643c5213_label_3_18" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_20_296" tabindex="-1"><a tabindex="-1" id="random6744737643c5213_label_3_18" title="Réseau" href="https://foad.ensicaen.fr/course/view.php?id=296">Réseau1A</a></p></li><li class="type_course depth_3 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_20_667" data-node-key="667" data-node-type="20" aria-labelledby="random6744737643c5213_label_3_19" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_20_667" tabindex="-1"><a tabindex="-1" id="random6744737643c5213_label_3_19" title="2a :: Développement mobile" href="https://foad.ensicaen.fr/course/view.php?id=667">DEV_MOB</a></p></li><li class="type_course depth_3 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_20_186" data-node-key="186" data-node-type="20" aria-labelledby="random6744737643c5213_label_3_20" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_20_186" tabindex="-1"><a tabindex="-1" id="random6744737643c5213_label_3_20" title="2A :: Cryptographie" href="https://foad.ensicaen.fr/course/view.php?id=186">Crypto</a></p></li><li class="type_course depth_3 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_20_15" data-node-key="15" data-node-type="20" aria-labelledby="random6744737643c5213_label_3_21" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_20_15" tabindex="-1"><a tabindex="-1" id="random6744737643c5213_label_3_21" title="2A :: Fouille de données - Apprentissage" href="https://foad.ensicaen.fr/course/view.php?id=15">Fouille</a></p></li><li class="type_course depth_3 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_20_62" data-node-key="62" data-node-type="20" aria-labelledby="random6744737643c5213_label_3_22" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_20_62" tabindex="-1"><a tabindex="-1" id="random6744737643c5213_label_3_22" title="2A :: Génie logiciel et patrons de conception" href="https://foad.ensicaen.fr/course/view.php?id=62">GénieLog2A</a></p></li><li class="type_custom depth_3 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5213_label_3_24" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5213_label_3_24" href="https://foad.ensicaen.fr/my/courses.php"><i class="icon fa fa-square fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">More...</span></a></p></li></ul></li><li class="type_system depth_2 contains_branch" role="treeitem" aria-expanded="true" aria-owns="random6744737643c5215_group" aria-labelledby="random6744737643c523_label_2_25" tabindex="-1" aria-selected="false"><p class="tree_item branch canexpand" tabindex="-1"><a tabindex="-1" id="random6744737643c523_label_2_25" href="https://foad.ensicaen.fr/course/index.php">Courses</a></p><ul id="random6744737643c5215_group" role="group" tabindex="-1"><li class="type_category depth_3 contains_branch" role="treeitem" aria-expanded="true" aria-owns="random6744737643c5217_group" aria-labelledby="random6744737643c5216_label_3_26" tabindex="-1" aria-selected="false"><p class="tree_item branch canexpand" tabindex="-1"><span tabindex="-1" id="random6744737643c5216_label_3_26">Formation Initiale sous statut Etudiant</span></p><ul id="random6744737643c5217_group" role="group" tabindex="-1"><li class="type_category depth_4 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_10_12" data-node-key="12" data-node-type="10" aria-labelledby="random6744737643c5218_label_4_27" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_10_12" tabindex="-1"><span tabindex="-1" id="random6744737643c5218_label_4_27">Spécialité Génie Physique et Systèmes embarqués</span></p></li><li class="type_category depth_4 contains_branch" role="treeitem" aria-expanded="true" aria-owns="random6744737643c5219_group" aria-labelledby="random6744737643c5218_label_4_28" tabindex="-1" aria-selected="false"><p class="tree_item branch canexpand" tabindex="-1"><span tabindex="-1" id="random6744737643c5218_label_4_28">Spécialité Informatique</span></p><ul id="random6744737643c5219_group" role="group" tabindex="-1"><li class="type_category depth_5 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_10_8" data-node-key="8" data-node-type="10" aria-labelledby="random6744737643c5220_label_5_29" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_10_8" tabindex="-1"><span tabindex="-1" id="random6744737643c5220_label_5_29">1ère année</span></p></li><li class="type_category depth_5 contains_branch" role="treeitem" aria-expanded="true" aria-owns="random6744737643c5221_group" aria-labelledby="random6744737643c5220_label_5_30" tabindex="-1" aria-selected="false"><p class="tree_item branch canexpand" tabindex="-1"><span tabindex="-1" id="random6744737643c5220_label_5_30">2ème année</span></p><ul id="random6744737643c5221_group" role="group" tabindex="-1"><li class="type_course depth_6 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5222_label_6_31" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5222_label_6_31" title="2A : Apprentissage" href="https://foad.ensicaen.fr/course/view.php?id=1106"><i class="icon fa fa-graduation-cap fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">2A : Apprentissage</span></a></p></li><li class="type_course depth_6 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5222_label_6_32" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5222_label_6_32" title="2a :: Architectures parallèles" href="https://foad.ensicaen.fr/course/view.php?id=872"><i class="icon fa fa-graduation-cap fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">pararch</span></a></p></li><li class="type_course depth_6 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5222_label_6_33" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5222_label_6_33" title="2A MISIA :: Initiation à Unity" href="https://foad.ensicaen.fr/course/view.php?id=838"><i class="icon fa fa-graduation-cap fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">Unity</span></a></p></li><li class="type_course depth_6 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5222_label_6_34" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5222_label_6_34" title="2a ePCS :: Cartes à Puce: ISO7816 &amp; EMV" href="https://foad.ensicaen.fr/course/view.php?id=66"><i class="icon fa fa-graduation-cap fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">2a ePCS Cartes</span></a></p></li><li class="type_course depth_6 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5222_label_6_35" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5222_label_6_35" title="2a ePCS :: Cryptographie appliquée" href="https://foad.ensicaen.fr/course/view.php?id=68"><i class="icon fa fa-graduation-cap fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">2a_Mon_Crypto_appl</span></a></p></li><li class="type_course depth_6 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5222_label_6_36" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5222_label_6_36" title="2a ePCS :: Principes du e-Paiement" href="https://foad.ensicaen.fr/course/view.php?id=65"><i class="icon fa fa-graduation-cap fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">2a ePCS Principes</span></a></p></li><li class="type_course depth_6 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5222_label_6_37" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5222_label_6_37" title="2a :: Architecture des systèmes de communication" href="https://foad.ensicaen.fr/course/view.php?id=465"><i class="icon fa fa-graduation-cap fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">Sys_Com</span></a></p></li><li class="type_course depth_6 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5222_label_6_38" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5222_label_6_38" title="2A MISIA :: Bases de la synthèse d&#39;images" href="https://foad.ensicaen.fr/course/view.php?id=120"><i class="icon fa fa-graduation-cap fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">Bases_SI</span></a></p></li><li class="type_course depth_6 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_20_61" data-node-key="61" data-node-type="20" aria-labelledby="random6744737643c5222_label_6_39" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_20_61" tabindex="-1"><a tabindex="-1" id="random6744737643c5222_label_6_39" title="Compilation et théorie des langages" href="https://foad.ensicaen.fr/course/view.php?id=61">Compil</a></p></li><li class="type_course depth_6 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5222_label_6_40" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5222_label_6_40" title="Conception d&#39;interfaces graphiques" href="https://foad.ensicaen.fr/course/view.php?id=273"><i class="icon fa fa-graduation-cap fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">Interfaces Graphiques</span></a></p></li><li class="type_course depth_6 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5222_label_6_41" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5222_label_6_41" title="Ingénierie des systèmes logiciels" href="https://foad.ensicaen.fr/course/view.php?id=210"><i class="icon fa fa-graduation-cap fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">Ingé Sys Lo</span></a></p></li><li class="type_course depth_6 contains_branch" role="treeitem" aria-expanded="true" aria-owns="random6744737643c5233_group" aria-labelledby="random6744737643c5222_label_6_42" tabindex="-1" aria-selected="false"><p class="tree_item branch canexpand" tabindex="-1"><a tabindex="-1" id="random6744737643c5222_label_6_42" title="2A :: Intelligence artificielle" href="https://foad.ensicaen.fr/course/view.php?id=47&amp;section=0">IA</a></p><ul id="random6744737643c5233_group" role="group" tabindex="-1"><li class="type_container depth_7 contains_branch" role="treeitem" aria-expanded="false" aria-owns="random6744737643c5235_group" aria-labelledby="random6744737643c5234_label_7_43" tabindex="-1" aria-selected="false"><p class="tree_item branch" tabindex="-1"><a tabindex="-1" id="random6744737643c5234_label_7_43" href="https://foad.ensicaen.fr/user/index.php?id=47">Participants</a></p><ul id="random6744737643c5235_group" role="group" aria-hidden="true" tabindex="-1"><li class="type_setting depth_8 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5236_label_8_44" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5236_label_8_44" href="https://foad.ensicaen.fr/blog/index.php?courseid=47"><i class="icon fa fa-square fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">Course blogs</span></a></p></li><li class="type_user depth_8 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5236_label_8_45" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5236_label_8_45" href="https://foad.ensicaen.fr/user/view.php?id=13112&amp;course=47"><i class="icon fa fa-square fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">Alexandre Arezes</span></a></p></li></ul></li><li class="type_setting depth_7 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5234_label_7_46" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5234_label_7_46" href="https://foad.ensicaen.fr/admin/tool/lp/coursecompetencies.php?courseid=47"><i class="icon fa fa-check-square-o fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">Competencies</span></a></p></li><li class="type_setting depth_7 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5234_label_7_47" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5234_label_7_47" href="https://foad.ensicaen.fr/grade/report/index.php?id=47"><i class="icon fa fa-table fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">Grades</span></a></p></li><li class="type_structure depth_7 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_30_407" data-node-key="407" data-node-type="30" aria-labelledby="random6744737643c5234_label_7_48" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_30_407" tabindex="-1"><a tabindex="-1" id="random6744737643c5234_label_7_48" href="https://foad.ensicaen.fr/course/view.php?id=47&amp;section=1">Lectures</a></p></li><li class="type_structure depth_7 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_30_409" data-node-key="409" data-node-type="30" aria-labelledby="random6744737643c5234_label_7_49" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_30_409" tabindex="-1"><a tabindex="-1" id="random6744737643c5234_label_7_49" href="https://foad.ensicaen.fr/course/view.php?id=47&amp;section=2">Tutorials</a></p></li><li class="type_structure depth_7 contains_branch" role="treeitem" aria-expanded="true" aria-owns="random6744737643c5241_group" aria-labelledby="random6744737643c5234_label_7_50" tabindex="-1" aria-selected="false"><p class="tree_item branch" tabindex="-1"><a tabindex="-1" id="random6744737643c5234_label_7_50" href="https://foad.ensicaen.fr/course/view.php?id=47&amp;section=4">Labs</a></p><ul id="random6744737643c5241_group" role="group" tabindex="-1"><li class="type_activity depth_8 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5242_label_8_51" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5242_label_8_51" title="File" href="https://foad.ensicaen.fr/mod/resource/view.php?id=13871"><img class="icon navicon" alt="File" title="File" src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/pdf-24.png" tabindex="-1"><span class="item-content-wrap" tabindex="-1">Primer for the labs</span></a></p></li><li class="type_activity depth_8 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5242_label_8_52" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5242_label_8_52" title="File" href="https://foad.ensicaen.fr/mod/resource/view.php?id=21480"><img class="icon navicon" alt="File" title="File" src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/archive-24.png" tabindex="-1"><span class="item-content-wrap" tabindex="-1">Démo Pacman avec Python et TkInter</span></a></p></li><li class="type_activity depth_8 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5242_label_8_54" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5242_label_8_54" title="Page" href="https://foad.ensicaen.fr/mod/page/view.php?id=14021"><img class="icon navicon" alt="Page" title="Page" src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/monologo(1).svg" tabindex="-1"><span class="item-content-wrap" tabindex="-1">Lab 2: Constraint Satisfaction Problem with Sudoku</span></a></p></li><li class="type_activity depth_8 item_with_icon current_branch" role="treeitem" aria-labelledby="random6744737643c5242_label_8_55" tabindex="-1" aria-selected="false"><p class="tree_item hasicon active_tree_node" tabindex="-1"><a tabindex="-1" id="random6744737643c5242_label_8_55" title="Page" href="https://foad.ensicaen.fr/mod/page/view.php?id=14022"><img class="icon navicon" alt="Page" title="Page" src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/monologo(1).svg" tabindex="-1"><span class="item-content-wrap" tabindex="-1">Lab 3: Adversarial Search Problem with Pac-Man</span></a></p></li><li class="type_activity depth_8 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5242_label_8_58" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5242_label_8_58" title="Page" href="https://foad.ensicaen.fr/mod/page/view.php?id=14057"><img class="icon navicon" alt="Page" title="Page" src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/monologo(1).svg" tabindex="-1"><span class="item-content-wrap" tabindex="-1">Lab 1: State Space Search with Sokoban</span></a></p></li></ul></li><li class="type_structure depth_7 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_30_405" data-node-key="405" data-node-type="30" aria-labelledby="random6744737643c5234_label_7_69" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_30_405" tabindex="-1"><a tabindex="-1" id="random6744737643c5234_label_7_69" href="https://foad.ensicaen.fr/course/view.php?id=47&amp;section=5">Bibliography</a></p></li></ul></li></ul></li><li class="type_category depth_5 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_10_11" data-node-key="11" data-node-type="10" aria-labelledby="random6744737643c5220_label_5_70" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_10_11" tabindex="-1"><span tabindex="-1" id="random6744737643c5220_label_5_70">3ème année</span></p></li><li class="type_course depth_5 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5220_label_5_71" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5220_label_5_71" title="Espace commun de la spécialité Informatique" href="https://foad.ensicaen.fr/course/view.php?id=49"><i class="icon fa fa-graduation-cap fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">SpeInfo</span></a></p></li><li class="type_course depth_5 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_20_200" data-node-key="200" data-node-type="20" aria-labelledby="random6744737643c5220_label_5_72" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_20_200" tabindex="-1"><a tabindex="-1" id="random6744737643c5220_label_5_72" title="Espace commun de la majeure Image, Son &amp; Intelligence Artificielle" href="https://foad.ensicaen.fr/course/view.php?id=200">MAJ__ISIA</a></p></li><li class="type_course depth_5 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5220_label_5_73" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5220_label_5_73" title="Espace commun de la majeure e-Paiement &amp; CyberSécurité" href="https://foad.ensicaen.fr/course/view.php?id=199"><i class="icon fa fa-graduation-cap fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">Majeure ePCS</span></a></p></li></ul></li><li class="type_category depth_4 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_10_23" data-node-key="23" data-node-type="10" aria-labelledby="random6744737643c5218_label_4_74" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_10_23" tabindex="-1"><span tabindex="-1" id="random6744737643c5218_label_4_74">Spécialité Matériaux et Chimie</span></p></li><li class="type_category depth_4 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_10_63" data-node-key="63" data-node-type="10" aria-labelledby="random6744737643c5218_label_4_75" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_10_63" tabindex="-1"><span tabindex="-1" id="random6744737643c5218_label_4_75">Tronc commun scientifique</span></p></li><li class="type_category depth_4 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_10_6" data-node-key="6" data-node-type="10" aria-labelledby="random6744737643c5218_label_4_76" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_10_6" tabindex="-1"><span tabindex="-1" id="random6744737643c5218_label_4_76">Langues &amp; Humanités</span></p></li><li class="type_course depth_4 item_with_icon" role="treeitem" aria-labelledby="random6744737643c5218_label_4_77" tabindex="-1" aria-selected="false"><p class="tree_item hasicon" tabindex="-1"><a tabindex="-1" id="random6744737643c5218_label_4_77" title="clase español lunes 13-9-24" href="https://foad.ensicaen.fr/course/view.php?id=1179"><i class="icon fa fa-graduation-cap fa-fw navicon" aria-hidden="true" tabindex="-1"></i><span class="item-content-wrap" tabindex="-1">13-9-24</span></a></p></li></ul></li><li class="type_category depth_3 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_10_4" data-node-key="4" data-node-type="10" aria-labelledby="random6744737643c5216_label_3_78" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_10_4" tabindex="-1"><span tabindex="-1" id="random6744737643c5216_label_3_78">Formation Initiale sous statut Apprentis</span></p></li><li class="type_category depth_3 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_10_5" data-node-key="5" data-node-type="10" aria-labelledby="random6744737643c5216_label_3_79" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_10_5" tabindex="-1"><span tabindex="-1" id="random6744737643c5216_label_3_79">Formations Continues</span></p></li><li class="type_category depth_3 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_10_111" data-node-key="111" data-node-type="10" aria-labelledby="random6744737643c5216_label_3_82" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_10_111" tabindex="-1"><span tabindex="-1" id="random6744737643c5216_label_3_82">Formations des établissements partenaires</span></p></li><li class="type_category depth_3 contains_branch" role="treeitem" aria-expanded="false" data-requires-ajax="true" data-loaded="false" data-node-id="expandable_branch_10_62" data-node-key="62" data-node-type="10" aria-labelledby="random6744737643c5216_label_3_83" tabindex="-1" aria-selected="false"><p class="tree_item branch" id="expandable_branch_10_62" tabindex="-1"><span tabindex="-1" id="random6744737643c5216_label_3_83">TICE</span></p></li></ul></li></ul></li></ul>
+            <div class="footer"></div>
+            
+        </div>
+
+    </div>
+
+</section>
+
+  <span id="sb-1"></span></aside>
+                </section>
+            </div>
+
+            <div class="columnright blockcolumn  has-blocks ">
+                <section data-region="blocks-column" class="d-print-none" aria-label="Blocks">
+                    <aside id="block-region-side-post" class="block-region" data-blockregion="side-post" data-droptarget="1"><a href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#sb-2" class="sr-only sr-only-focusable">Skip Administration</a>
+
+<section id="inst191" class=" block_settings block  card mb-3" role="navigation" data-block="settings" data-instance-id="191" aria-labelledby="instance-191-header">
+
+    <div class="card-body p-3">
+
+            <h5 id="instance-191-header" class="card-title d-inline">Administration</h5>
+
+
+        <div class="card-text content mt-3">
+            <div id="settingsnav" class="box py-3 block_tree_box"><ul class="block_tree list" role="tree" data-ajax-loader="block_navigation/site_admin_loader"><li class="type_course depth_1 contains_branch" tabindex="0" role="treeitem" aria-expanded="false" aria-owns="random6744737643c5251_group" aria-selected="true"><p class="tree_item root_node tree_item branch" tabindex="-1"><span tabindex="-1">Course administration</span></p><ul id="random6744737643c5251_group" role="group" aria-hidden="true" tabindex="-1"><li class="type_setting depth_2 item_with_icon" tabindex="-1" role="treeitem" aria-selected="false"><p class="tree_item hasicon tree_item leaf" tabindex="-1"><a href="https://foad.ensicaen.fr/enrol/self/unenrolself.php?enrolid=923" tabindex="-1"><i class="icon fa fa-user fa-fw navicon" aria-hidden="true" tabindex="-1"></i>Unenrol me from IA</a></p></li></ul></li></ul></div>
+            <div class="footer"></div>
+            
+        </div>
+
+    </div>
+
+</section>
+
+  <span id="sb-2"></span></aside>
+                </section>
+            </div>
+        </div>
+    </div>
+    <div id="drawer-67447376477456744737643c5266" class=" drawer bg-white hidden" aria-expanded="false" aria-hidden="true" data-region="right-hand-drawer" role="region" tabindex="0">
+            <div id="message-drawer-67447376477456744737643c5266" class="message-app" data-region="message-drawer" role="region">
+            <div class="closewidget text-right pr-2">
+                <a class="text-dark btn-link" data-action="closedrawer" href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#" title="Close" aria-label="Close">
+                    <i class="icon fa fa-window-close fa-fw " aria-hidden="true"></i>
+                </a>
+            </div>
+            <div class="header-container position-relative" data-region="header-container">
+                <div class="hidden border-bottom p-1 px-sm-2" aria-hidden="true" data-region="view-contacts">
+                    <div class="d-flex align-items-center">
+                        <div class="align-self-stretch">
+                            <a class="h-100 d-flex align-items-center mr-2" href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#" data-route-back="" role="button">
+                                <div class="icon-back-in-drawer">
+                                    <span class="dir-rtl-hide"><i class="icon fa fa-chevron-left fa-fw " aria-hidden="true"></i></span>
+                                    <span class="dir-ltr-hide"><i class="icon fa fa-chevron-right fa-fw " aria-hidden="true"></i></span>
+                                </div>
+                                <div class="icon-back-in-app">
+                                    <span class="dir-rtl-hide"><i class="icon fa fa-times fa-fw " aria-hidden="true"></i></span>
+                                </div>                            </a>
+                        </div>
+                        <div>
+                            Contacts
+                        </div>
+                        <div class="ml-auto">
+                            <a href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#" data-route="view-search" role="button" aria-label="Search">
+                                <i class="icon fa fa-search fa-fw " aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>                
+                <div class="hidden bg-white position-relative border-bottom p-1 px-sm-2" aria-hidden="true" data-region="view-conversation">
+                    <div class="hidden" data-region="header-content"></div>
+                    <div class="hidden" data-region="header-edit-mode">
+                        
+                        <div class="d-flex p-2 align-items-center">
+                            Messages selected:
+                            <span class="ml-1" data-region="message-selected-court">1</span>
+                            <button type="button" class="ml-auto close" aria-label="Cancel message selection" data-action="cancel-edit-mode">
+                                    <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div data-region="header-placeholder">
+                        <div class="d-flex">
+                            <div class="ml-2 rounded-circle bg-pulse-grey align-self-center" style="height: 38px; width: 38px">
+                            </div>
+                            <div class="ml-2 " style="flex: 1">
+                                <div class="mt-1 bg-pulse-grey w-75" style="height: 16px;">
+                                </div>
+                            </div>
+                            <div class="ml-2 bg-pulse-grey align-self-center" style="height: 16px; width: 20px">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hidden position-absolute z-index-1" data-region="confirm-dialogue-container" style="top: 0; bottom: -1px; right: 0; left: 0; background: rgba(0,0,0,0.3);"></div>
+                </div>                <div class="border-bottom p-1 px-sm-2" aria-hidden="false" data-region="view-overview">
+                    <div class="d-flex align-items-center">
+                        <div class="input-group simplesearchform">
+                            <input type="text" class="form-control" placeholder="Search" aria-label="Search" data-region="view-overview-search-input">
+                            <div class="input-group-append">
+                                <span class="icon-no-margin btn btn-submit">
+                                    <i class="icon fa fa-search fa-fw " aria-hidden="true"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ml-2">
+                            <a href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#" data-route="view-settings" data-route-param="13112" aria-label="Settings" role="button">
+                                <i class="icon fa fa-cog fa-fw " aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="text-right mt-sm-3">
+                        <a href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#" data-route="view-contacts" role="button">
+                            <i class="icon fa fa-user fa-fw " aria-hidden="true"></i>
+                            Contacts
+                            <span class="badge badge-primary bg-primary ml-2 hidden" data-region="contact-request-count">
+                                <span aria-hidden="true">0</span>
+                                <span class="sr-only">There are 0 pending contact requests</span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="hidden border-bottom p-1 px-sm-2 view-search" aria-hidden="true" data-region="view-search">
+                    <div class="d-flex align-items-center">
+                        <a class="mr-2 align-self-stretch d-flex align-items-center" href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#" data-route-back="" data-action="cancel-search" role="button">
+                            <div class="icon-back-in-drawer">
+                                <span class="dir-rtl-hide"><i class="icon fa fa-chevron-left fa-fw " aria-hidden="true"></i></span>
+                                <span class="dir-ltr-hide"><i class="icon fa fa-chevron-right fa-fw " aria-hidden="true"></i></span>
+                            </div>
+                            <div class="icon-back-in-app">
+                                <span class="dir-rtl-hide"><i class="icon fa fa-times fa-fw " aria-hidden="true"></i></span>
+                            </div>                        </a>
+                        <div class="input-group simplesearchform">
+                            <input type="text" class="form-control" placeholder="Search" aria-label="Search" data-region="search-input">
+                            <div class="input-group-append">
+                                <button class="btn btn-submit icon-no-margin" type="button" data-action="search" aria-label="Search">
+                                    <span data-region="search-icon-container">
+                                        <i class="icon fa fa-search fa-fw " aria-hidden="true"></i>
+                                    </span>
+                                    <span class="hidden" data-region="loading-icon-container">
+                                        <span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+                <div class="hidden border-bottom p-1 px-sm-2 pb-sm-3" aria-hidden="true" data-region="view-settings">
+                    <div class="d-flex align-items-center">
+                        <div class="align-self-stretch">
+                            <a class="h-100 d-flex mr-2 align-items-center" href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#" data-route-back="" role="button">
+                                <div class="icon-back-in-drawer">
+                                    <span class="dir-rtl-hide"><i class="icon fa fa-chevron-left fa-fw " aria-hidden="true"></i></span>
+                                    <span class="dir-ltr-hide"><i class="icon fa fa-chevron-right fa-fw " aria-hidden="true"></i></span>
+                                </div>
+                                <div class="icon-back-in-app">
+                                    <span class="dir-rtl-hide"><i class="icon fa fa-times fa-fw " aria-hidden="true"></i></span>
+                                </div>                            </a>
+                        </div>
+                        <div>
+                            Settings
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="body-container position-relative" data-region="body-container">
+                
+                <div class="hidden" data-region="view-contact" aria-hidden="true">
+                    <div class="p-2 pt-3" data-region="content-container"></div>
+                </div>                <div class="hidden h-100" data-region="view-contacts" aria-hidden="true" data-user-id="13112">
+                    <div class="d-flex flex-column h-100">
+                        <div class="p-3 border-bottom">
+                            <ul class="nav nav-pills nav-fill" role="tablist">
+                                <li class="nav-item">
+                                    <a id="contacts-tab-67447376477456744737643c5266" class="nav-link active" href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#contacts-tab-panel-67447376477456744737643c5266" data-toggle="tab" data-action="show-contacts-section" role="tab" aria-controls="contacts-tab-panel-67447376477456744737643c5266" aria-selected="true">
+                                        Contacts
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a id="requests-tab-67447376477456744737643c5266" class="nav-link" href="https://foad.ensicaen.fr/mod/page/view.php?id=14022#requests-tab-panel-67447376477456744737643c5266" data-toggle="tab" data-action="show-requests-section" role="tab" aria-controls="requests-tab-panel-67447376477456744737643c5266" aria-selected="false">
+                                        Requests
+                                        <span class="badge badge-primary bg-primary ml-2 hidden" data-region="contact-request-count">
+                                            <span aria-hidden="true">0</span>
+                                            <span class="sr-only">There are 0 pending contact requests</span>
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content d-flex flex-column h-100">
+                                            <div class="tab-pane fade show active h-100 lazy-load-list" aria-live="polite" data-region="lazy-load-list" data-user-id="13112" id="contacts-tab-panel-67447376477456744737643c5266" data-section="contacts" role="tabpanel" aria-labelledby="contacts-tab-67447376477456744737643c5266">
+                    
+                    <div class="hidden text-center p-2" data-region="empty-message-container">
+                        No contacts
+                    </div>
+                    <div class="hidden list-group" data-region="content-container">
+                        
+                    </div>
+                    <div class="list-group" data-region="placeholder-container">
+                        
+                    </div>
+                    <div class="w-100 text-center p-3 hidden" data-region="loading-icon-container">
+                        <span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+                    </div>
+                </div>
+                
+                                            <div class="tab-pane fade h-100 lazy-load-list" aria-live="polite" data-region="lazy-load-list" data-user-id="13112" id="requests-tab-panel-67447376477456744737643c5266" data-section="requests" role="tabpanel" aria-labelledby="requests-tab-67447376477456744737643c5266">
+                    
+                    <div class="hidden text-center p-2" data-region="empty-message-container">
+                        No contact requests
+                    </div>
+                    <div class="hidden list-group" data-region="content-container">
+                        
+                    </div>
+                    <div class="list-group" data-region="placeholder-container">
+                        
+                    </div>
+                    <div class="w-100 text-center p-3 hidden" data-region="loading-icon-container">
+                        <span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+                    </div>
+                </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="view-conversation hidden h-100" aria-hidden="true" data-region="view-conversation" data-user-id="13112" data-midnight="1732489200" data-message-poll-min="10" data-message-poll-max="120" data-message-poll-after-max="300" style="overflow-y: auto; overflow-x: hidden">
+                    <div class="position-relative h-100" data-region="content-container" style="overflow-y: auto; overflow-x: hidden">
+                        <div class="content-message-container hidden h-100 px-2 pt-0" data-region="content-message-container" role="log" style="overflow-y: auto; overflow-x: hidden">
+                            <div class="py-3 sticky-top z-index-1 border-bottom text-center hidden" data-region="contact-request-sent-message-container">
+                                <p class="m-0">Contact request sent</p>
+                                <p class="font-italic font-weight-light" data-region="text"></p>
+                            </div>
+                            <div class="p-3 text-center hidden" data-region="self-conversation-message-container">
+                                <p class="m-0">Personal space</p>
+                                <p class="font-italic font-weight-light" data-region="text">Save draft messages, links, notes etc. to access later.</p>
+                           </div>
+                            <div class="hidden text-center p-3" data-region="more-messages-loading-icon-container"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</div>
+                        </div>
+                        <div class="p-4 w-100 h-100 hidden position-absolute z-index-1" data-region="confirm-dialogue-container" style="top: 0; background: rgba(0,0,0,0.3);">
+                            
+                            <div class="p-3 bg-white" data-region="confirm-dialogue" role="alert">
+                                <p class="text-muted" data-region="dialogue-text"></p>
+                                <div class="mb-2 custom-control custom-checkbox hidden" data-region="delete-messages-for-all-users-toggle-container">
+                                    <input type="checkbox" class="custom-control-input" id="delete-messages-for-all-users" data-region="delete-messages-for-all-users-toggle">
+                                    <label class="custom-control-label text-muted" for="delete-messages-for-all-users">
+                                        Delete for me and for everyone else
+                                    </label>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-block hidden" data-action="confirm-block">
+                                    <span data-region="dialogue-button-text">Block</span>
+                                    <span class="hidden" data-region="loading-icon-container"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-block hidden" data-action="confirm-unblock">
+                                    <span data-region="dialogue-button-text">Unblock</span>
+                                    <span class="hidden" data-region="loading-icon-container"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-block hidden" data-action="confirm-remove-contact">
+                                    <span data-region="dialogue-button-text">Remove</span>
+                                    <span class="hidden" data-region="loading-icon-container"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-block hidden" data-action="confirm-add-contact">
+                                    <span data-region="dialogue-button-text">Add</span>
+                                    <span class="hidden" data-region="loading-icon-container"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-block hidden" data-action="confirm-delete-selected-messages">
+                                    <span data-region="dialogue-button-text">Delete</span>
+                                    <span class="hidden" data-region="loading-icon-container"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-block hidden" data-action="confirm-delete-conversation">
+                                    <span data-region="dialogue-button-text">Delete</span>
+                                    <span class="hidden" data-region="loading-icon-container"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-block hidden" data-action="request-add-contact">
+                                    <span data-region="dialogue-button-text">Send contact request</span>
+                                    <span class="hidden" data-region="loading-icon-container"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-block hidden" data-action="accept-contact-request">
+                                    <span data-region="dialogue-button-text">Accept and add to contacts</span>
+                                    <span class="hidden" data-region="loading-icon-container"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-block hidden" data-action="decline-contact-request">
+                                    <span data-region="dialogue-button-text">Decline</span>
+                                    <span class="hidden" data-region="loading-icon-container"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-block" data-action="okay-confirm">OK</button>
+                                <button type="button" class="btn btn-secondary btn-block" data-action="cancel-confirm">Cancel</button>
+                            </div>
+                        </div>
+                        <div class="px-2 pb-2 pt-0" data-region="content-placeholder">
+                            <div class="h-100 d-flex flex-column">
+                                <div class="px-2 pb-2 pt-0 bg-light h-100" style="overflow-y: auto">
+                                    <div class="mt-4">
+                                        <div class="mb-4">
+                                            <div class="mx-auto bg-white" style="height: 25px; width: 100px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                    </div>                                    <div class="mt-4">
+                                        <div class="mb-4">
+                                            <div class="mx-auto bg-white" style="height: 25px; width: 100px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                    </div>                                    <div class="mt-4">
+                                        <div class="mb-4">
+                                            <div class="mx-auto bg-white" style="height: 25px; width: 100px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                    </div>                                    <div class="mt-4">
+                                        <div class="mb-4">
+                                            <div class="mx-auto bg-white" style="height: 25px; width: 100px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                    </div>                                    <div class="mt-4">
+                                        <div class="mb-4">
+                                            <div class="mx-auto bg-white" style="height: 25px; width: 100px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                        <div class="d-flex flex-column p-2 bg-white rounded mb-2">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="mr-2">
+                                                    <div class="rounded-circle bg-pulse-grey" style="height: 35px; width: 35px"></div>
+                                                </div>
+                                                <div class="mr-4 w-75 bg-pulse-grey" style="height: 16px"></div>
+                                                <div class="ml-auto bg-pulse-grey" style="width: 35px; height: 16px"></div>
+                                            </div>
+                                            <div class="bg-pulse-grey w-100" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-100 mt-2" style="height: 16px"></div>
+                                            <div class="bg-pulse-grey w-75 mt-2" style="height: 16px"></div>
+                                        </div>
+                                    </div>                                </div>
+                            </div>                        </div>
+                    </div>
+                </div>
+                
+                <div class="hidden" aria-hidden="true" data-region="view-group-info">
+                    <div class="pt-3 h-100 d-flex flex-column" data-region="group-info-content-container" style="overflow-y: auto"></div>
+                </div>                <div class="h-100 view-overview-body" aria-hidden="false" data-region="view-overview" data-user-id="13112">
+                    <div id="message-drawer-view-overview-container-67447376477456744737643c5266" class="d-flex flex-column h-100" style="overflow-y: auto">
+                            
+                            
+                            <div class="section border-0 card rounded-0" data-region="view-overview-favourites">
+                                <div id="view-overview-favourites-toggle" class="card-header rounded-0" data-region="toggle">
+                                    <button class="btn btn-link w-100 text-left p-1 p-sm-2 d-flex rounded-0 align-items-center overview-section-toggle collapsed" data-toggle="collapse" data-target="#view-overview-favourites-target-67447376477456744737643c5266" aria-expanded="false" aria-controls="view-overview-favourites-target-67447376477456744737643c5266">
+                                        <span class="collapsed-icon-container">
+                                            <i class="icon fa fa-caret-right fa-fw " aria-hidden="true"></i>
+                                        </span>
+                                        <span class="expanded-icon-container">
+                                            <i class="icon fa fa-caret-down fa-fw " aria-hidden="true"></i>
+                                        </span>
+                                        <span class="font-weight-bold">Starred</span>
+                                        <small class="hidden ml-1" data-region="section-total-count-container">
+                                            (<span aria-hidden="true" data-region="section-total-count"></span><span class="sr-only"> total conversations</span>)
+                                        </small>
+                                        <span class="hidden ml-2" data-region="loading-icon-container">
+                                            <span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+                                        </span>
+                                        <span class="hidden badge badge-pill badge-primary ml-auto bg-primary" data-region="section-unread-count">
+                                            <span aria-hidden="true"></span>
+                                            <span class="sr-only">There are  unread conversations</span>
+                                        </span>
+                                    </button>
+                                </div>
+                                                            <div class="collapse border-bottom  lazy-load-list" aria-live="polite" data-region="lazy-load-list" data-user-id="13112" id="view-overview-favourites-target-67447376477456744737643c5266" aria-labelledby="view-overview-favourites-toggle" data-parent="#message-drawer-view-overview-container-67447376477456744737643c5266">
+                                
+                                <div class="hidden text-center p-2" data-region="empty-message-container">
+                                            <p class="text-muted mt-2">No starred conversations</p>
+
+                                </div>
+                                <div class="hidden list-group" data-region="content-container">
+                                    
+                                </div>
+                                <div class="list-group" data-region="placeholder-container">
+                                            <div class="text-center py-2"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</div>
+
+                                </div>
+                                <div class="w-100 text-center p-3 hidden" data-region="loading-icon-container">
+                                    <span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+                                </div>
+                            </div>
+                            </div>
+                            
+                            
+                            <div class="section border-0 card rounded-0" data-region="view-overview-group-messages">
+                                <div id="view-overview-group-messages-toggle" class="card-header rounded-0" data-region="toggle">
+                                    <button class="btn btn-link w-100 text-left p-1 p-sm-2 d-flex rounded-0 align-items-center overview-section-toggle collapsed" data-toggle="collapse" data-target="#view-overview-group-messages-target-67447376477456744737643c5266" aria-expanded="false" aria-controls="view-overview-group-messages-target-67447376477456744737643c5266">
+                                        <span class="collapsed-icon-container">
+                                            <i class="icon fa fa-caret-right fa-fw " aria-hidden="true"></i>
+                                        </span>
+                                        <span class="expanded-icon-container">
+                                            <i class="icon fa fa-caret-down fa-fw " aria-hidden="true"></i>
+                                        </span>
+                                        <span class="font-weight-bold">Group</span>
+                                        <small class="hidden ml-1" data-region="section-total-count-container">
+                                            (<span aria-hidden="true" data-region="section-total-count"></span><span class="sr-only"> total conversations</span>)
+                                        </small>
+                                        <span class="hidden ml-2" data-region="loading-icon-container">
+                                            <span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+                                        </span>
+                                        <span class="hidden badge badge-pill badge-primary ml-auto bg-primary" data-region="section-unread-count">
+                                            <span aria-hidden="true"></span>
+                                            <span class="sr-only">There are  unread conversations</span>
+                                        </span>
+                                    </button>
+                                </div>
+                                                            <div class="collapse border-bottom  lazy-load-list" aria-live="polite" data-region="lazy-load-list" data-user-id="13112" id="view-overview-group-messages-target-67447376477456744737643c5266" aria-labelledby="view-overview-group-messages-toggle" data-parent="#message-drawer-view-overview-container-67447376477456744737643c5266">
+                                
+                                <div class="hidden text-center p-2" data-region="empty-message-container">
+                                            <p class="text-muted mt-2">No group conversations</p>
+
+                                </div>
+                                <div class="hidden list-group" data-region="content-container">
+                                    
+                                </div>
+                                <div class="list-group" data-region="placeholder-container">
+                                            <div class="text-center py-2"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</div>
+
+                                </div>
+                                <div class="w-100 text-center p-3 hidden" data-region="loading-icon-container">
+                                    <span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+                                </div>
+                            </div>
+                            </div>
+                            
+                            
+                            <div class="section border-0 card rounded-0" data-region="view-overview-messages">
+                                <div id="view-overview-messages-toggle" class="card-header rounded-0" data-region="toggle">
+                                    <button class="btn btn-link w-100 text-left p-1 p-sm-2 d-flex rounded-0 align-items-center overview-section-toggle collapsed" data-toggle="collapse" data-target="#view-overview-messages-target-67447376477456744737643c5266" aria-expanded="false" aria-controls="view-overview-messages-target-67447376477456744737643c5266">
+                                        <span class="collapsed-icon-container">
+                                            <i class="icon fa fa-caret-right fa-fw " aria-hidden="true"></i>
+                                        </span>
+                                        <span class="expanded-icon-container">
+                                            <i class="icon fa fa-caret-down fa-fw " aria-hidden="true"></i>
+                                        </span>
+                                        <span class="font-weight-bold">Private</span>
+                                        <small class="hidden ml-1" data-region="section-total-count-container">
+                                            (<span aria-hidden="true" data-region="section-total-count"></span><span class="sr-only"> total conversations</span>)
+                                        </small>
+                                        <span class="hidden ml-2" data-region="loading-icon-container">
+                                            <span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+                                        </span>
+                                        <span class="hidden badge badge-pill badge-primary ml-auto bg-primary" data-region="section-unread-count">
+                                            <span aria-hidden="true"></span>
+                                            <span class="sr-only">There are  unread conversations</span>
+                                        </span>
+                                    </button>
+                                </div>
+                                                            <div class="collapse border-bottom  lazy-load-list" aria-live="polite" data-region="lazy-load-list" data-user-id="13112" id="view-overview-messages-target-67447376477456744737643c5266" aria-labelledby="view-overview-messages-toggle" data-parent="#message-drawer-view-overview-container-67447376477456744737643c5266">
+                                
+                                <div class="hidden text-center p-2" data-region="empty-message-container">
+                                            <p class="text-muted mt-2">No private conversations</p>
+
+                                </div>
+                                <div class="hidden list-group" data-region="content-container">
+                                    
+                                </div>
+                                <div class="list-group" data-region="placeholder-container">
+                                            <div class="text-center py-2"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</div>
+
+                                </div>
+                                <div class="w-100 text-center p-3 hidden" data-region="loading-icon-container">
+                                    <span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+                                </div>
+                            </div>
+                            </div>
+                    </div>
+                </div>
+                
+                <div data-region="view-search" aria-hidden="true" class="h-100 hidden" data-user-id="13112" data-users-offset="0" data-messages-offset="0" style="overflow-y: auto">
+                    <div class="hidden" data-region="search-results-container" style="overflow-y: auto">
+                        
+                        <div class="d-flex flex-column">
+                            <div class="mb-3 bg-white" data-region="all-contacts-container">
+                                <div data-region="contacts-container" class="pt-2">
+                                    <h4 class="h6 px-2">Contacts</h4>
+                                    <div class="list-group" data-region="list"></div>
+                                </div>
+                                <div data-region="non-contacts-container" class="pt-2 border-top">
+                                    <h4 class="h6 px-2">Non-contacts</h4>
+                                    <div class="list-group" data-region="list"></div>
+                                </div>
+                                <div class="text-right">
+                                    <button class="btn btn-link text-primary" data-action="load-more-users">
+                                        <span data-region="button-text">Load more</span>
+                                        <span data-region="loading-icon-container" class="hidden"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="bg-white" data-region="messages-container">
+                                <h4 class="h6 px-2 pt-2">Messages</h4>
+                                <div class="list-group" data-region="list"></div>
+                                <div class="text-right">
+                                    <button class="btn btn-link text-primary" data-action="load-more-messages">
+                                        <span data-region="button-text">Load more</span>
+                                        <span data-region="loading-icon-container" class="hidden"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="hidden p-3 text-center" data-region="no-results-container">No results</p>
+                        </div>                    </div>
+                    <div class="hidden" data-region="loading-placeholder">
+                        <div class="text-center pt-3 icon-size-4"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</div>
+                    </div>
+                    <div class="p-3 text-center" data-region="empty-message-container">
+                        <p>Search people and messages</p>
+                    </div>
+                </div>                
+                <div class="h-100 hidden bg-white" aria-hidden="true" data-region="view-settings">
+                    <div class="hidden" data-region="content-container">
+                        
+                        <div data-region="settings" class="p-3">
+                            <h3 class="h6 font-weight-bold">Privacy</h3>
+                            <p>You can restrict who can message you</p>
+                            <div data-preference="blocknoncontacts" class="mb-3">
+                                <fieldset>
+                                    <legend class="sr-only">Accept messages from:</legend>
+                                        <div class="custom-control custom-radio mb-2">
+                                            <input type="radio" name="message_blocknoncontacts" class="custom-control-input" id="block-noncontacts-67447376477456744737643c5266-1" value="1">
+                                            <label class="custom-control-label ml-2" for="block-noncontacts-67447376477456744737643c5266-1">
+                                                My contacts only
+                                            </label>
+                                        </div>
+                                        <div class="custom-control custom-radio mb-2">
+                                            <input type="radio" name="message_blocknoncontacts" class="custom-control-input" id="block-noncontacts-67447376477456744737643c5266-0" value="0">
+                                            <label class="custom-control-label ml-2" for="block-noncontacts-67447376477456744737643c5266-0">
+                                                My contacts and anyone in my courses
+                                            </label>
+                                        </div>
+                                </fieldset>
+                            </div>
+                        
+                            <div class="hidden" data-region="notification-preference-container">
+                                <h3 class="mb-2 mt-4 h6 font-weight-bold">Notification preferences</h3>
+                            </div>
+                        
+                            <h3 class="mb-2 mt-4 h6 font-weight-bold">General</h3>
+                            <div data-preference="entertosend">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="enter-to-send-67447376477456744737643c5266">
+                                    <label class="custom-control-label" for="enter-to-send-67447376477456744737643c5266">
+                                        Use enter to send
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-region="placeholder-container">
+                        
+                        <div class="d-flex flex-column p-3">
+                            <div class="w-25 bg-pulse-grey h6" style="height: 18px"></div>
+                            <div class="w-75 bg-pulse-grey mb-4" style="height: 18px"></div>
+                            <div class="mb-3">
+                                <div class="w-100 d-flex mb-3">
+                                    <div class="bg-pulse-grey rounded-circle" style="width: 18px; height: 18px"></div>
+                                    <div class="bg-pulse-grey w-50 ml-2" style="height: 18px"></div>
+                                </div>
+                                <div class="w-100 d-flex mb-3">
+                                    <div class="bg-pulse-grey rounded-circle" style="width: 18px; height: 18px"></div>
+                                    <div class="bg-pulse-grey w-50 ml-2" style="height: 18px"></div>
+                                </div>
+                                <div class="w-100 d-flex mb-3">
+                                    <div class="bg-pulse-grey rounded-circle" style="width: 18px; height: 18px"></div>
+                                    <div class="bg-pulse-grey w-50 ml-2" style="height: 18px"></div>
+                                </div>
+                            </div>
+                            <div class="w-50 bg-pulse-grey h6 mb-3 mt-2" style="height: 18px"></div>
+                            <div class="mb-4">
+                                <div class="w-100 d-flex mb-2 align-items-center">
+                                    <div class="bg-pulse-grey w-25" style="width: 18px; height: 27px"></div>
+                                    <div class="bg-pulse-grey w-25 ml-2" style="height: 18px"></div>
+                                </div>
+                                <div class="w-100 d-flex mb-2 align-items-center">
+                                    <div class="bg-pulse-grey w-25" style="width: 18px; height: 27px"></div>
+                                    <div class="bg-pulse-grey w-25 ml-2" style="height: 18px"></div>
+                                </div>
+                            </div>
+                            <div class="w-25 bg-pulse-grey h6 mb-3 mt-2" style="height: 18px"></div>
+                            <div class="mb-3">
+                                <div class="w-100 d-flex mb-2 align-items-center">
+                                    <div class="bg-pulse-grey w-25" style="width: 18px; height: 27px"></div>
+                                    <div class="bg-pulse-grey w-50 ml-2" style="height: 18px"></div>
+                                </div>
+                            </div>
+                        </div>                    </div>
+                </div>            </div>
+            <div class="footer-container position-relative" data-region="footer-container">
+                
+                <div class="hidden border-top bg-white position-relative" aria-hidden="true" data-region="view-conversation" data-enter-to-send="0">
+                    <div class="hidden p-sm-2" data-region="content-messages-footer-container">
+                        
+                            <div class="emoji-auto-complete-container w-100 hidden" data-region="emoji-auto-complete-container" aria-live="polite" aria-hidden="true">
+                            </div>
+                        <div class="d-flex mt-sm-1">
+                            <textarea dir="auto" data-region="send-message-txt" class="form-control bg-light" rows="3" data-auto-rows="" data-min-rows="3" data-max-rows="5" aria-label="Write a message..." placeholder="Write a message..." style="resize: none" maxlength="4096"></textarea>
+                        
+                            <div class="position-relative d-flex flex-column">
+                                    <div data-region="emoji-picker-container" class="emoji-picker-container hidden" aria-hidden="true">
+                                        
+                                        <div data-region="emoji-picker" class="card shadow emoji-picker">
+                                            <div class="card-header px-1 pt-1 pb-0 d-flex justify-content-between flex-shrink-0">
+                                                <button class="btn btn-outline-secondary icon-no-margin category-button rounded-0 selected" data-action="show-category" data-category="Recent" title="Recent">
+                                                    <i class="icon fa fa-clock-o fa-fw " aria-hidden="true"></i>
+                                                </button>
+                                                <button class="btn btn-outline-secondary icon-no-margin category-button rounded-0" data-action="show-category" data-category="Smileys &amp; Emotion" title="Smileys &amp; emotion">
+                                                    <i class="icon fa fa-smile-o fa-fw " aria-hidden="true"></i>
+                                                </button>
+                                                <button class="btn btn-outline-secondary icon-no-margin category-button rounded-0" data-action="show-category" data-category="People &amp; Body" title="People &amp; body">
+                                                    <i class="icon fa fa-male fa-fw " aria-hidden="true"></i>
+                                                </button>
+                                                <button class="btn btn-outline-secondary icon-no-margin category-button rounded-0" data-action="show-category" data-category="Animals &amp; Nature" title="Animals &amp; nature">
+                                                    <i class="icon fa fa-leaf fa-fw " aria-hidden="true"></i>
+                                                </button>
+                                                <button class="btn btn-outline-secondary icon-no-margin category-button rounded-0" data-action="show-category" data-category="Food &amp; Drink" title="Food &amp; drink">
+                                                    <i class="icon fa fa-cutlery fa-fw " aria-hidden="true"></i>
+                                                </button>
+                                                <button class="btn btn-outline-secondary icon-no-margin category-button rounded-0" data-action="show-category" data-category="Travel &amp; Places" title="Travel &amp; places">
+                                                    <i class="icon fa fa-plane fa-fw " aria-hidden="true"></i>
+                                                </button>
+                                                <button class="btn btn-outline-secondary icon-no-margin category-button rounded-0" data-action="show-category" data-category="Activities" title="Activities">
+                                                    <i class="icon fa fa-futbol-o fa-fw " aria-hidden="true"></i>
+                                                </button>
+                                                <button class="btn btn-outline-secondary icon-no-margin category-button rounded-0" data-action="show-category" data-category="Objects" title="Objects">
+                                                    <i class="icon fa fa-lightbulb-o fa-fw " aria-hidden="true"></i>
+                                                </button>
+                                                <button class="btn btn-outline-secondary icon-no-margin category-button rounded-0" data-action="show-category" data-category="Symbols" title="Symbols">
+                                                    <i class="icon fa fa-heart fa-fw " aria-hidden="true"></i>
+                                                </button>
+                                                <button class="btn btn-outline-secondary icon-no-margin category-button rounded-0" data-action="show-category" data-category="Flags" title="Flags">
+                                                    <i class="icon fa fa-flag fa-fw " aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                            <div class="card-body p-2 d-flex flex-column overflow-hidden">
+                                                <div class="input-group mb-1 flex-shrink-0">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text pr-0 bg-white text-muted">
+                                                            <i class="icon fa fa-search fa-fw " aria-hidden="true"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="text" class="form-control border-left-0" placeholder="Search" aria-label="Search" data-region="search-input">
+                                                </div>
+                                                <div class="flex-grow-1 overflow-auto emojis-container h-100" data-region="emojis-container">
+                                                    <div class="position-relative" data-region="row-container"></div>
+                                                </div>
+                                                <div class="flex-grow-1 overflow-auto search-results-container h-100 hidden" data-region="search-results-container">
+                                                    <div class="position-relative" data-region="row-container"></div>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer d-flex flex-shrink-0" data-region="footer">
+                                                <div class="emoji-preview" data-region="emoji-preview"></div>
+                                                <div data-region="emoji-short-name" class="emoji-short-name text-muted text-wrap ml-2"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-link btn-icon icon-size-3 ml-1" aria-label="Toggle emoji picker" data-action="toggle-emoji-picker">
+                                        <i class="icon fa fa-smile-o fa-fw " aria-hidden="true"></i>
+                                    </button>
+                                <button class="btn btn-link btn-icon icon-size-3 ml-1 mt-auto" aria-label="Send message" data-action="send-message">
+                                    <span data-region="send-icon-container"><i class="icon fa fa-paper-plane fa-fw " aria-hidden="true"></i></span>
+                                    <span class="hidden" data-region="loading-icon-container"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hidden p-sm-2" data-region="content-messages-footer-edit-mode-container">
+                        
+                        <div class="d-flex p-3 justify-content-end">
+                            <button class="btn btn-link btn-icon my-1 icon-size-4" data-action="delete-selected-messages" data-toggle="tooltip" data-placement="top" title="Delete selected messages">
+                                <span data-region="icon-container"><i class="icon fa fa-trash fa-fw " aria-hidden="true"></i></span>
+                                <span class="hidden" data-region="loading-icon-container"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                                <span class="sr-only">Delete selected messages</span>
+                            </button>
+                        </div>                    </div>
+                    <div class="hidden bg-secondary p-sm-3" data-region="content-messages-footer-require-contact-container">
+                        
+                        <div class="p-3 bg-white">
+                            <p data-region="title"></p>
+                            <p class="text-muted" data-region="text"></p>
+                            <button type="button" class="btn btn-primary btn-block" data-action="request-add-contact">
+                                <span data-region="dialogue-button-text">Send contact request</span>
+                                <span class="hidden" data-region="loading-icon-container"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hidden bg-secondary p-sm-3" data-region="content-messages-footer-require-unblock-container">
+                        
+                        <div class="p-3 bg-white">
+                            <p class="text-muted" data-region="text">You have blocked this user.</p>
+                            <button type="button" class="btn btn-primary btn-block" data-action="request-unblock">
+                                <span data-region="dialogue-button-text">Unblock user</span>
+                                <span class="hidden" data-region="loading-icon-container"><span class="loading-icon icon-no-margin"><i class="icon fa fa-circle-o-notch fa-spin fa-fw " title="Loading" role="img" aria-label="Loading"></i></span>
+</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hidden bg-secondary p-sm-3" data-region="content-messages-footer-unable-to-message">
+                        
+                        <div class="p-3 bg-white">
+                            <p class="text-muted" data-region="text">You are unable to message this user</p>
+                        </div>
+                    </div>
+                    <div class="p-sm-2" data-region="placeholder-container">
+                        <div class="d-flex">
+                            <div class="bg-pulse-grey w-100" style="height: 80px"></div>
+                            <div class="mx-2 mb-2 align-self-end bg-pulse-grey" style="height: 20px; width: 20px"></div>
+                        </div>                    </div>
+                    <div class="hidden position-absolute z-index-1" data-region="confirm-dialogue-container" style="top: -1px; bottom: 0; right: 0; left: 0; background: rgba(0,0,0,0.3);"></div>
+                </div>                    <div data-region="view-overview" class="text-center">
+                        <a href="https://foad.ensicaen.fr/message/index.php">
+                            See all
+                        </a>
+                    </div>
+            </div>
+        </div>
+
+</div>
+    <footer id="page-footer" class="footer-dark bg-dark text-light">
+        <div class="container footer-dark-inner">
+            <div id="course-footer"></div>
+    
+            <div class="pb-3">
+                    <div class="footer-support-link"><a href="https://help.ensicaen.fr/" target="blank"><i class="icon fa fa-envelope-o fa-fw " aria-hidden="true"></i>Contact site support<i class="icon fa fa-external-link fa-fw ml-1" aria-hidden="true"></i></a></div>
+            </div>
+    
+            <div class="logininfo">You are logged in as <a href="https://foad.ensicaen.fr/user/profile.php?id=13112" title="View profile">Alexandre Arezes</a> (<a href="https://foad.ensicaen.fr/login/logout.php?sesskey=5w0K0l8BdV">Log out</a>)</div>
+            <div class="tool_usertours-resettourcontainer"></div>
+            <div class="homelink"><a href="https://foad.ensicaen.fr/course/view.php?id=47">IA</a></div>
+            <nav class="nav navbar-nav d-md-none" aria-label="Custom menu">
+                    <ul class="list-unstyled pt-3">
+                    </ul>
+            </nav>
+            <div class="tool_dataprivacy"><a href="https://foad.ensicaen.fr/admin/tool/dataprivacy/summary.php">Data retention summary</a></div><a class="mobilelink" href="https://download.moodle.org/mobile?version=2022112814.01&amp;lang=en&amp;iosappid=633359593&amp;androidappid=com.moodle.moodlemobile">Get the mobile app</a>
+            <div class="performanceinfo pageinfo">This page is: General type: incourse. Context Page: Lab 3: Adversarial Search Problem with Pac-Man (context id 25874). Page type mod-page-view. </div>
+            <script>
+//<![CDATA[
+var require = {
+    baseUrl : 'https://foad.ensicaen.fr/lib/requirejs.php/1732489503/',
+    // We only support AMD modules with an explicit define() statement.
+    enforceDefine: true,
+    skipDataMain: true,
+    waitSeconds : 0,
+
+    paths: {
+        jquery: 'https://foad.ensicaen.fr/lib/javascript.php/1732489503/lib/jquery/jquery-3.6.1.min',
+        jqueryui: 'https://foad.ensicaen.fr/lib/javascript.php/1732489503/lib/jquery/ui-1.13.2/jquery-ui.min',
+        jqueryprivate: 'https://foad.ensicaen.fr/lib/javascript.php/1732489503/lib/requirejs/jquery-private'
+    },
+
+    // Custom jquery config map.
+    map: {
+      // '*' means all modules will get 'jqueryprivate'
+      // for their 'jquery' dependency.
+      '*': { jquery: 'jqueryprivate' },
+      // Stub module for 'process'. This is a workaround for a bug in MathJax (see MDL-60458).
+      '*': { process: 'core/first' },
+
+      // 'jquery-private' wants the real jQuery module
+      // though. If this line was not here, there would
+      // be an unresolvable cyclic dependency.
+      jqueryprivate: { jquery: 'jquery' }
+    }
+};
+
+//]]>
+</script>
+<script src="./IA_ Lab 3_ Adversarial Search Problem with Pac-Man _ Moodle ENSICAEN_files/javascript(3).php"></script>
+<script>
+//<![CDATA[
+M.util.js_pending("core/first");
+require(['core/first'], function() {
+require(['core/prefetch'])
+;
+require(["media_videojs/loader"], function(loader) {
+    loader.setUp('en');
+});;
+M.util.js_pending('block_navigation/navblock'); require(['block_navigation/navblock'], function(amd) {amd.init("190"); M.util.js_complete('block_navigation/navblock');});;
+M.util.js_pending('block_settings/settingsblock'); require(['block_settings/settingsblock'], function(amd) {amd.init("191", null); M.util.js_complete('block_settings/settingsblock');});;
+M.util.js_pending('core_courseformat/local/content/activity_header'); require(['core_courseformat/local/content/activity_header'], function(amd) {amd.init(); M.util.js_complete('core_courseformat/local/content/activity_header');});;
+
+require(['jquery', 'message_popup/notification_popover_controller'], function($, Controller) {
+    var container = $('#nav-notification-popover-container');
+    var controller = new Controller(container);
+    controller.registerEventListeners();
+    controller.registerListNavigationEventListeners();
+});
+;
+
+require(
+[
+    'jquery',
+    'core_message/message_popover'
+],
+function(
+    $,
+    Popover
+) {
+    var toggle = $('#message-drawer-toggle-6744737646b8e6744737643c5255');
+    Popover.init(toggle);
+});
+;
+
+        require(['jquery', 'core/custom_interaction_events'], function($, CustomEvents) {
+            CustomEvents.define('#jump-to-activity', [CustomEvents.events.accessibleChange]);
+            $('#jump-to-activity').on(CustomEvents.events.accessibleChange, function() {
+                if ($(this).val()) {
+                    $('#url_select_f6744737643c5265').submit();
+                }
+            });
+        });
+    ;
+
+require(['jquery', 'core_message/message_drawer'], function($, MessageDrawer) {
+    var root = $('#message-drawer-67447376477456744737643c5266');
+    MessageDrawer.init(root, '67447376477456744737643c5266', false);
+});
+;
+
+M.util.js_pending('theme_boost/loader');
+require(['theme_boost/loader'], function() {
+    M.util.js_complete('theme_boost/loader');
+});
+;
+M.util.js_pending('core/notification'); require(['core/notification'], function(amd) {amd.init(25874, []); M.util.js_complete('core/notification');});;
+M.util.js_pending('core/log'); require(['core/log'], function(amd) {amd.setConfig({"level":"warn"}); M.util.js_complete('core/log');});;
+M.util.js_pending('core/page_global'); require(['core/page_global'], function(amd) {amd.init(); M.util.js_complete('core/page_global');});;
+M.util.js_pending('core/utility'); require(['core/utility'], function(amd) {M.util.js_complete('core/utility');});;
+M.util.js_pending('core/storage_validation'); require(['core/storage_validation'], function(amd) {amd.init(1732539187); M.util.js_complete('core/storage_validation');});
+    M.util.js_complete("core/first");
+});
+//]]>
+</script>
+<script>
+//<![CDATA[
+M.str = {"moodle":{"lastmodified":"Last modified","name":"Name","error":"Error","info":"Information","yes":"Yes","no":"No","viewallcourses":"View all courses","cancel":"Cancel","confirm":"Confirm","areyousure":"Are you sure?","closebuttontitle":"Close","unknownerror":"Unknown error","file":"File","url":"URL","collapseall":"Collapse all","expandall":"Expand all"},"repository":{"type":"Type","size":"Size","invalidjson":"Invalid JSON string","nofilesattached":"No files attached","filepicker":"File picker","logout":"Logout","nofilesavailable":"No files available","norepositoriesavailable":"Sorry, none of your current repositories can return files in the required format.","fileexistsdialogheader":"File exists","fileexistsdialog_editor":"A file with that name has already been attached to the text you are editing.","fileexistsdialog_filemanager":"A file with that name has already been attached","renameto":"Rename to \"{$a}\"","referencesexist":"There are {$a} links to this file","select":"Select"},"admin":{"confirmdeletecomments":"You are about to delete comments, are you sure?","confirmation":"Confirmation"},"debug":{"debuginfo":"Debug info","line":"Line","stacktrace":"Stack trace"},"langconfig":{"labelsep":": "}};
+//]]>
+</script>
+<script>
+//<![CDATA[
+(function() {Y.use("moodle-filter_mathjaxloader-loader",function() {M.filter_mathjaxloader.configure({"mathjaxconfig":"\nMathJax.Hub.Config({\n    config: [\"Accessible.js\", \"Safe.js\"],\n    errorSettings: { message: [\"!\"] },\n    skipStartupTypeset: true,\n    messageStyle: \"none\"\n});\n","lang":"en"});
+});
+M.util.help_popups.setup(Y);
+ M.util.js_pending('random6744737643c5267'); Y.on('domready', function() { M.util.js_complete("init");  M.util.js_complete('random6744737643c5267'); });
+})();
+//]]>
+</script>
+
+        </div>
+    </footer>
+</div><div id="yui3-css-stamp" style="position: absolute !important; visibility: hidden !important" class=""></div>
+
+
+</body></html>
