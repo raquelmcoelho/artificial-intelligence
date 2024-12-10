@@ -118,7 +118,7 @@ class BetterExtractor(FeatureExtractor):
     def getFeatures(self, state, action):
         """
         The distance to the nearest capsule (use method state.getCapsules()).
-        
+
         The number of safe ghosts that are one step away.
         Each ghost state maintains a variable called state.getGhostState(index).scaredTimer,
         where index if one of the value of the list returned by state.getGhostPositions().
