@@ -102,7 +102,6 @@ class RationalAgent(Agent):
     def init(self, gridSize):
         self.state = State(gridSize)
         " *** YOUR CODE HERE ***"
-        self.isStarted = False
 
     def think(self, percept, action, score):
         """
@@ -126,20 +125,21 @@ class RationalAgent(Agent):
         # state ← INTERPRET-PERCEPTS(percept)
         # action ← CHOOSE-BEST-ACTION(state, rules)
         # return action
-        if not self.isStarted:
-            self.isStarted = True
-            return GRAB
-        else:
-            self.state.updateStateFromPercepts(percept, score)
-            self.state.printWorld()
-            best_action = self.bestAction(percept)
-            self.state.updateStateFromAction(best_action)
-            return best_action
+       
+    
+        self.state.updateStateFromPercepts(percept, score)
+        self.state.printWorld()
+        best_action = self.bestAction(percept)
+        self.state.updateStateFromAction(best_action)
+        return best_action
 
     def bestAction(self, percept):
         """
         Returns the best action regarding the current state of the game.
         """
+        # TODO: path finding to start
+        # if self.state.goldIsGrabbed:
+        #     AStar()
 
         print("percept: ", percept)
 
@@ -151,6 +151,7 @@ class RationalAgent(Agent):
         myself = self.state.getCell(self.state.posx, self.state.posy)
         if myself == GOLD:
             return GRAB
+            
 
         #  Check neighbours
         directions_up = 0
@@ -183,6 +184,7 @@ class RationalAgent(Agent):
                     return SHOOT
                 else:
                     possibilities.remove(i)
+                    continue
 
             elif square == PIT:
                 possibilities.remove(i)
@@ -281,7 +283,6 @@ SHOOT = "shoot"
 GRAB = "grab"
 
 DIRECTION_TABLE = [(0, -1), (1, 0), (0, 1), (-1, 0)]  # North, East, South, West
-
 
 class State:
     def __init__(self, gridSize):
