@@ -125,8 +125,7 @@ class RationalAgent(Agent):
         # state ← INTERPRET-PERCEPTS(percept)
         # action ← CHOOSE-BEST-ACTION(state, rules)
         # return action
-       
-    
+
         self.state.updateStateFromPercepts(percept, score)
         self.state.printWorld()
         best_action = self.bestAction(percept)
@@ -137,9 +136,9 @@ class RationalAgent(Agent):
         """
         Returns the best action regarding the current state of the game.
         """
-        # TODO: path finding to start
-        # if self.state.goldIsGrabbed:
-        #     AStar()
+        
+        if self.state.goldIsGrabbed:
+            return self.state.fromDirectionToAction(self.AStar(self.state.posx, self.state.posy))
 
         print("percept: ", percept)
 
@@ -148,10 +147,9 @@ class RationalAgent(Agent):
             return CLIMB
 
         #  grab gold
-        myself = self.state.getCell(self.state.posx, self.state.posy)
-        if myself == GOLD:
+        myposition = self.state.getCell(self.state.posx, self.state.posy)
+        if myposition == GOLD:
             return GRAB
-            
 
         #  Check neighbours
         directions_up = 0
@@ -171,7 +169,7 @@ class RationalAgent(Agent):
         ):
             square = self.state.getCell(x, y)
 
-            print(f"analise square {square} at position ({x}, {y})  i={i}")
+            print(f"analising square {square} at position ({x}, {y})  i={i}")
             if square == VISITED or square == SAFE:
                 continue
 
@@ -191,9 +189,7 @@ class RationalAgent(Agent):
                 continue
 
             # coward approach
-            elif square == WUMPUSP or square == PITP:
-                possibilities.remove(i)
-                continue
+            
 
             elif square == UNKNOWN:
                 if percept.stench and percept.breeze:
@@ -228,6 +224,7 @@ class RationalAgent(Agent):
                     self.state.direction
                 ]:
                     proba[i] = 5
+                
 
             action = self.state.fromDirectionToAction(
                 random.choices(possibilities, weights=proba)[0]
@@ -235,6 +232,40 @@ class RationalAgent(Agent):
             print(f"proba = {proba}")
 
         return action
+    
+    def heuristic(self, x1,x2,y1,y2):
+        return abs(x1-x2) + abs(y1-y2)
+    
+    def AStar(self, x,y) :
+        from utils import PriorityQueue
+        open_list = PriorityQueue()
+        open_list.push([((x,y),None )], self.heuristic(x,1,y,1)) # a state is a pair (board, direction)
+        closed_list = set([(x,y)]) # keep already explored positions
+
+        while not open_list.isEmpty():
+            # Get the path at the top of the queue
+            current_path, cost = open_list.pop()
+            # Get the last place of that path
+            current_state, current_direction = current_path[-1]
+            # Check if we have reached the goal
+            if current_state == (1,1):
+                return current_path[1][1]
+            else:
+                # Check were we can go from here
+                # Add the new paths (one step longer) to the queue
+                for i, (x,y) in enumerate(
+                    self.state.getCellNeighbors(current_state[1], current_state[1])
+                ):  
+                    # Avoid loop!
+                    if (x,y) not in closed_list:
+                        square = self.state.getCell(x,y)
+                        if square not in [WALL, WUMPUS, WUMPUSP, WUMPUSPITP, PIT, PITP]:
+                            closed_list.add((x,y))
+                            open_list.push((current_path + [ (x,y) , i]), (cost + 1 + self.heuristic(x,1,y,1)))
+        return []
+
+    
+
 
 
 #######
@@ -283,6 +314,17 @@ SHOOT = "shoot"
 GRAB = "grab"
 
 DIRECTION_TABLE = [(0, -1), (1, 0), (0, 1), (-1, 0)]  # North, East, South, West
+
+# x - -> +
+
+# y 
+# -
+# |
+# v
+# +
+
+#   (-1,-1) (1,-1)
+#   (-1, 1) (1, 1)
 
 class State:
     def __init__(self, gridSize):
