@@ -355,17 +355,27 @@ class State:
         Updates the current environment with regards to the percept information.
         """
         self.score = score
-        #  Update neighbours
+
+        # Update neighbours
         self.setCell(self.posx, self.posy, VISITED)
+
+        # Update location of Pits and Wumpus
         for x, y in self.getCellNeighbors(self.posx, self.posy):
             square = self.getCell(x, y)
-            if square == WALL or square == VISITED or square == SAFE:
+            if (
+                square == WALL
+                or square == VISITED
+                or square == SAFE
+                or square == WUMPUS
+                or square == PIT
+            ):
                 continue
             if percept.stench and percept.breeze:
-                if square == UNKNOWN and self.wumpusLocation == None:
-                    self.setCell(x, y, WUMPUSPITP)
-                else:
-                    self.setCell(x, y, PITP)
+                if square == UNKNOWN:
+                    if self.wumpusLocation == None:
+                        self.setCell(x, y, WUMPUSPITP)
+                    else:
+                        self.setCell(x, y, PITP)
             elif percept.stench and not percept.breeze:
                 if square == UNKNOWN or square == WUMPUSPITP:
                     if self.wumpusLocation == None:
@@ -386,23 +396,29 @@ class State:
         if percept.glitter:
             self.setCell(self.posx, self.posy, GOLD)
 
-        # Kill Wumpus?
+        # Wumpus killed
         if percept.scream:
-            if self.wumpusLocation is not None:
-                self.setCell(self.wumpusLocation[0], self.wumpusLocation[1], SAFE)
             self.wumpusIsKilled = True
+            # Remove WUMPUS from all squares
+            for x, y in self.getCellNeighbors(self.posx, self.posy):
+                square = self.getCell(x, y)
+                if square == WUMPUSP or square == WUMPUS:
+                    self.setCell(x, y, SAFE)
+                elif square == WUMPUSPITP:
+                    self.setCell(x, y, PITP)
 
-        # Confirm Wumpus or Pit.
+        # Confirm Wumpus or Pit
         for y in range(self.size):
             for x in range(self.size):
                 if self.getCell(x, y) == VISITED:
+                    # Count the number WUMPUSP in neighborhood
                     wumpusCount = 0
                     for px, py in self.getCellNeighbors(x, y):
                         if self.getCell(px, py) in [WUMPUSP, WUMPUSPITP]:
                             wumpusCount += 1
                     if (
                         wumpusCount == 1
-                    ):  # Confirmer WUMPI+USP et supprimer les autres WUMPUSP (il n'ya qu'un WUMPUS).
+                    ):  # Confirm WUMPUSP as WUMPUS and discard other WUMPUSP
                         for px, py in self.getCellNeighbors(x, y):
                             if self.getCell(px, py) in [WUMPUSP, WUMPUSPITP]:
                                 self.setCell(px, py, WUMPUS)
@@ -414,6 +430,7 @@ class State:
                                         if self.getCell(x1, y1) == WUMPUSPITP:
                                             self.setCell(x1, y1, PITP)
                                 break
+                    # Count the number of PITP in neighborhood
                     pitCount = 0
                     for px, py in self.getCellNeighbors(x, y):
                         if self.getCell(px, py) in [PIT, PITP, WUMPUSPITP]:
