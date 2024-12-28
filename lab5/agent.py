@@ -153,12 +153,13 @@ class RationalAgent(Agent):
             return GRAB
 
         #  check neighbours
-        bonus = 1
+        bonus = 5
         high = 100
-        medium = 5
+        medium = 10
+        little = 1
         impossible = 0
         directions_description = ["up", "right", "down", "left"]
-        directions_pontuation = [bonus, bonus, bonus, bonus]
+        directions_score = [impossible, impossible, impossible, impossible]
 
         for i, (x, y) in enumerate(
             self.state.getCellNeighbors(self.state.posx, self.state.posy)
@@ -173,25 +174,21 @@ class RationalAgent(Agent):
             neighbor_direction = i
             is_same_direction = neighbor_direction == self.state.direction
 
-            if is_same_direction:
-                directions_pontuation[neighbor_direction] += medium
-                print(f"same direction +{medium}")
-
             # switch case possible states
             if square == SAFE:
-                directions_pontuation[neighbor_direction] += high
-                print(f"safe +{high}")
+                directions_score[neighbor_direction] = high
+                print(f"safe = {high}")
 
             elif square == VISITED:
-                directions_pontuation[neighbor_direction] += medium
-                print(f"visited +{medium}")
+                directions_score[neighbor_direction] = medium
+                print(f"visited = {medium}")
 
             elif square == WALL:
-                directions_pontuation[neighbor_direction] = impossible
+                directions_score[neighbor_direction] = impossible
                 print(f"wall = {impossible}")
 
             elif square == PIT:
-                directions_pontuation[neighbor_direction] = impossible
+                directions_score[neighbor_direction] = impossible
                 print(f"pit = {impossible}")
 
             elif square == WUMPUS:
@@ -199,20 +196,26 @@ class RationalAgent(Agent):
                     return SHOOT
                 elif self.state.arrowInventory > 0:
                     # impossible to go foward and kill himself because its not at the same direction
-                    directions_pontuation[neighbor_direction] += high
-                    print(f"close to wumpus +{high}")
+                    directions_score[neighbor_direction] = high
+                    print(f"close to wumpus = {high}")
                 else:
-                    directions_pontuation[neighbor_direction] = impossible
+                    directions_score[neighbor_direction] = impossible
                     print(f"no arrows = {impossible}")
 
+            # TODO: if its 2 walls and 2 pits its all 0 than bugs the random choices
             elif square == WUMPUSP or square == PITP or square == WUMPUSPITP:
-                directions_pontuation[neighbor_direction] -= bonus
-                print(f"danger probability -{bonus}")
+                directions_score[neighbor_direction] = little
+                print(f"danger probability = {little}")
 
-            print(f"{directions_description[i]} = {directions_pontuation[i]}")
+            # bonus
+            if is_same_direction:
+                directions_score[neighbor_direction] *= bonus
+                print(f"same direction *{bonus}")
+
+            print(f"{directions_description[i]} = {directions_score[i]}")
 
         action = self.state.fromDirectionToAction(
-            random.choices([0, 1, 2, 3], weights=directions_pontuation)[0]
+            random.choices([0, 1, 2, 3], weights=directions_score)[0]
         )
 
         return action
