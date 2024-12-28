@@ -128,111 +128,92 @@ class RationalAgent(Agent):
 
         self.state.updateStateFromPercepts(percept, score)
         self.state.printWorld()
-        best_action = self.bestAction(percept)
+        best_action = self.bestAction()
         self.state.updateStateFromAction(best_action)
         return best_action
 
-    def bestAction(self, percept):
+    def bestAction(self):
         """
         Returns the best action regarding the current state of the game.
         """
 
-        # finish game
+        #  finish game
         if self.state.isGoal():
             return CLIMB
-        
+
+        #  go to start to finish the game
         if self.state.goldIsGrabbed:
             return self.state.fromDirectionToAction(
                 self.AStar((self.state.posx, self.state.posy))
             )
-
-        print("percept: ", percept)
 
         #  grab gold
         myposition = self.state.getCell(self.state.posx, self.state.posy)
         if myposition == GOLD:
             return GRAB
 
-        #  Check neighbours
-        directions_up = 0
-        directions_right = 1
-        directions_down = 2
-        directions_left = 3
-
-        possibilities = [
-            directions_up,
-            directions_right,
-            directions_down,
-            directions_left,
-        ]
+        #  check neighbours
+        bonus = 1
+        high = 100
+        medium = 5
+        impossible = 0
+        directions_description = ["up", "right", "down", "left"]
+        directions_pontuation = [bonus, bonus, bonus, bonus]
 
         for i, (x, y) in enumerate(
             self.state.getCellNeighbors(self.state.posx, self.state.posy)
         ):
             square = self.state.getCell(x, y)
 
-            print(f"analising square {square} at position ({x}, {y})  i={i}")
-            if square == VISITED or square == SAFE:
-                continue
+            print(
+                f"{i} - analising neighbor {square} at position ({x}, {y}) direction = {directions_description[i]}"
+            )
+
+            # the index matches the direction
+            neighbor_direction = i
+            is_same_direction = neighbor_direction == self.state.direction
+
+            if is_same_direction:
+                directions_pontuation[neighbor_direction] += medium
+                print(f"same direction +{medium}")
+
+            # switch case possible states
+            if square == SAFE:
+                directions_pontuation[neighbor_direction] += high
+                print(f"safe +{high}")
+
+            elif square == VISITED:
+                directions_pontuation[neighbor_direction] += medium
+                print(f"visited +{medium}")
 
             elif square == WALL:
-                possibilities.remove(i)
-
-            elif square == WUMPUS:
-                # TODO: check if its dead
-                if i == self.state.direction and self.state.arrowInventory > 0:
-                    return SHOOT
-                else:
-                    possibilities.remove(i)
-                    continue
+                directions_pontuation[neighbor_direction] = impossible
+                print(f"wall = {impossible}")
 
             elif square == PIT:
-                possibilities.remove(i)
-                continue
+                directions_pontuation[neighbor_direction] = impossible
+                print(f"pit = {impossible}")
 
-            # coward approach
+            elif square == WUMPUS:
+                if is_same_direction and self.state.arrowInventory > 0:
+                    return SHOOT
+                elif self.state.arrowInventory > 0:
+                    # impossible to go foward and kill himself because its not at the same direction
+                    directions_pontuation[neighbor_direction] += high
+                    print(f"close to wumpus +{high}")
+                else:
+                    directions_pontuation[neighbor_direction] = impossible
+                    print(f"no arrows = {impossible}")
+
             elif square == WUMPUSP or square == PITP or square == WUMPUSPITP:
-                possibilities.remove(i)
-                continue
+                directions_pontuation[neighbor_direction] -= bonus
+                print(f"danger probability -{bonus}")
 
-            elif square == UNKNOWN:
-                if percept.stench and percept.breeze:
-                    possibilities.remove(i)
-                elif percept.stench and not percept.breeze:
-                    if square == UNKNOWN or square == WUMPUSPITP:
-                        if self.wumpusLocation == None:
-                            possibilities.remove(i)
+            print(f"{directions_description[i]} = {directions_pontuation[i]}")
 
-                    elif square == PITP:
-                        continue
-                elif not percept.stench and percept.breeze:
-                    if square == UNKNOWN or square == WUMPUSPITP:
-                        possibilities.remove(i)
-                    elif square == WUMPUSP:
-                        possibilities.remove(i)
-        print(f"possibilities: {possibilities}")
-
-        if len(possibilities) == 0:
-            action = FORWARD
-        else:
-            n = len(possibilities)
-            proba = [1] * n
-
-            for i in range(n):
-                x, y = self.state.getCellNeighbors(self.state.posx, self.state.posy)[
-                    possibilities[i]
-                ]
-                if self.state.getCell(x, y) == SAFE:
-                    proba[i] = 10
-                elif (x - self.state.posx, y - self.state.posy) == DIRECTION_TABLE[
-                    self.state.direction
-                ]:
-                    proba[i] = 5
-
-            action = self.state.fromDirectionToAction(
-                random.choices(possibilities, weights=proba)[0]
-            )
-            print(f"proba = {proba}")
+        action = self.state.fromDirectionToAction(
+            random.choices([0, 1, 2, 3], weights=directions_pontuation)[0]
+        )
 
         return action
 
@@ -399,6 +380,7 @@ class State:
     def isGoal(self):
         return (
             (self.posx, self.posy) == (1, 1)
+            # TODO: check if its mandatory
             # and self.arrowInventory == 0
             and self.goldIsGrabbed
         )
