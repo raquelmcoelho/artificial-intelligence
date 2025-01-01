@@ -74,6 +74,7 @@ class HumanAgent(Agent):
         else:
             self.state.updateStateFromPercepts(percept, score)
             self.state.printWorld()
+            print(f"x= {self.state.posx} y= {self.state.posy}")
             key = input("Choose action (l, r, f, s, g, c) ? ")
             if key == "r":
                 action = RIGHT
@@ -129,6 +130,7 @@ class RationalAgent(Agent):
         self.state.updateStateFromPercepts(percept, score)
         self.state.printWorld()
         best_action = self.bestAction()
+        print(best_action)
         self.state.updateStateFromAction(best_action)
         return best_action
 
@@ -153,7 +155,7 @@ class RationalAgent(Agent):
             return GRAB
 
         #  check neighbours
-        bonus = 5
+        bonus = 2
         high = 100
         medium = 10
         little = 1
@@ -255,9 +257,16 @@ class RationalAgent(Agent):
                         square = self.state.getCell(state[0], state[1])
                         if square not in [WALL, WUMPUS, WUMPUSP, WUMPUSPITP, PIT, PITP]:
                             closed_list.add(state)
+                            if (
+                                state[0] - current_state[0],
+                                state[1] - current_state[1],
+                            ) == DIRECTION_TABLE[i]:
+                                w = 1
+                            else:
+                                w = 10
                             open_list.push(
                                 current_path + [(state, i)],
-                                (cost + 1 + self.heuristic(state, (1, 1))),
+                                (cost + w + self.heuristic(state, (1, 1))),
                             )
         return []
 
@@ -270,19 +279,145 @@ class LearningAgent(Agent):
     Your smartest Wumpus hunter brain.
     """
 
+    import copy
+
     isLearningAgent = True
+    alpha = 0.2
+    gamma = 0.8
+    epsilon = 0.05
+    actions = ["left", "right", "forward", "shoot", "grab", "climb"]
 
     def init(self, gridSize):
 
         self.state = State(gridSize)
-        " *** YOUR CODE HERE ***"
+        self.QValues = utils.Counter()
 
     def think(self, percept, action, score, isTraining):
         """
         Returns the best action regarding the current state of the game.
         Available actions are ['left', 'right', 'forward', 'shoot', 'grab', 'climb'].
         """
-        " *** YOUR CODE HERE ***"
+        reward = score - self.state.score
+        self.state.updateStateFromPercepts(percept, score)
+        if isTraining:
+            previous_state = copy.deepcopy(self.state)
+            action = random.choice(self.actions)
+            self.state.updateStateFromAction(action)
+            next_state = copy.deepcopy(self.state)
+            self.update(previous_state, action, next_state, reward)
+
+        else:
+            action = self.getAction(self.state)
+            self.state.updateStateFromAction(action)
+        return action
+
+    def update(self, state, action, nextState, reward):
+        """
+        The parent class calls this method to observe a
+        state = action => nextState and reward transition.
+        You should do your Q-Value update here
+
+        NOTE: You should never call this method,
+        it will be called on your behalf
+
+        Q k+1(s,a) ← (1-α) Qk(s,a) + α ( R(s) + γ maxa’ Qk(s’,a’) )
+        """
+        newValue = (1 - self.alpha) * self.getQValue(state, action) + self.alpha * (
+            reward + self.gamma * self.computeUtilityFromQValues(nextState)
+        )
+        self.setQValue(state, action, newValue)
+
+    def computeUtilityFromQValues(self, state):
+        """
+        Returns max_action Q(state,action)
+        where the max is over all legal actions. Note that if
+        there are no legal actions, which is the case at the
+        terminal state, you should return a value of 0.0.
+        """
+
+        if len(self.state.getCellNeighbors(self.state.posx, self.state.posy)) == 0:
+            return 0.0
+
+        return max([self.getQValue(state, action) for action in self.actions])
+
+    def computeActionFromQValues(self, state):
+        """
+        Returns the best action to take in a state. Note that if there
+        are no legal actions, which is the case at the terminal state,
+        you should return None.
+        """
+
+        if len(self.actions) == 0:
+            return None
+
+        qvalues = [self.getQValue(state, action) for action in self.actions]
+        maxQ = self.computeUtilityFromQValues(state)
+        w = [1 if Q == maxQ else 0 for Q in qvalues]
+        return random.choices(
+            self.actions,
+            weights=w,
+            k=1,
+        )[0]
+
+    def getAction(self, state):
+        """
+        Compute the action to take in the current state.  With
+        probability self.epsilon, we should take a random action and
+        take the best policy action otherwise.  Note that if there are
+        no legal actions, which is the case at the terminal state, you
+        should choose None as the action.
+
+        HINT: You might want to use util.flipCoin(prob)
+        """
+        "*** YOUR CODE INSTEAD OF THE FOLLOWING ***"
+        if len(self.actions) == 0:
+            return None
+
+        if utils.flipCoin(self.epsilon):
+            qvalues = [
+                self.getQValue(state, action)
+                for action in self.actions
+            ]
+            maxQ = self.computeUtilityFromQValues(state)
+            w = [0.0001 if Q == maxQ else 1 for Q in qvalues]
+            return random.choices(
+                self.actions,
+                weights=w,
+                k=1,
+            )[0]
+        else:
+            return self.computeActionFromQValues(state)
+
+    def getQValue(self, state, action):
+        """
+        Returns Q(state, action)
+        Should return 0.0 if we never seen
+        a state or the (state, action) tuple
+        """
+        return self.QValues[state, action]
+
+    def setQValue(self, state, action, value):
+        """
+        change Q(state, action)
+        """
+        self.QValues[state, action] = value
+
+    def getPolicy(self, state):
+        """
+        Compute the best action to take in a state.  Note that if there
+        are no legal actions, which is the case at the terminal state,
+        you should return None.
+        """
+        return self.computeActionFromQValues(state)
+
+    def getValue(self, state):
+        """
+        Returns max_action Q(state,action)
+        where the max is over legal actions.  Note that if
+        there are no legal actions, which is the case at the
+        terminal state, you should return a value of 0.0.
+        """
+        return self.computeUtilityFromQValues(state)
 
 
 #######
@@ -491,9 +626,16 @@ class State:
             self.direction = (self.direction + 1) % 4
         elif self.action == FORWARD:
             self.setCell(self.posx, self.posy, VISITED)
-            self.posx, self.posy = self.getForwardPosition(
-                self.posx, self.posy, self.direction
-            )
+            # self.posx, self.posy = self.getForwardPosition(
+            #     self.posx, self.posy, self.direction
+            # )
+            x, y = self.getForwardPosition(self.posx, self.posy, self.direction)
+
+            square = self.getCell(x, y)
+            if square != WALL:
+                self.posx, self.posy = self.getForwardPosition(
+                    self.posx, self.posy, self.direction
+                )
         self.setCell(self.posx, self.posy, self.agentAvatar())
 
     def agentAvatar(self):
