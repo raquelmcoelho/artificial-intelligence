@@ -374,10 +374,7 @@ class LearningAgent(Agent):
             return None
 
         if utils.flipCoin(self.epsilon):
-            qvalues = [
-                self.getQValue(state, action)
-                for action in self.actions
-            ]
+            qvalues = [self.getQValue(state, action) for action in self.actions]
             maxQ = self.computeUtilityFromQValues(state)
             w = [0.0001 if Q == maxQ else 1 for Q in qvalues]
             return random.choices(
@@ -418,6 +415,132 @@ class LearningAgent(Agent):
         terminal state, you should return a value of 0.0.
         """
         return self.computeUtilityFromQValues(state)
+    
+
+class Learning2Agent(LearningAgent):
+    """
+    Your smartest Wumpus hunter brain.
+    """
+
+    import copy
+
+    isLearningAgent = True
+    alpha = 0.2
+    gamma = 0.95
+    epsilon = 0.05
+    actions = ["left", "right", "forward", "shoot", "grab", "climb"]
+
+    def init(self, gridSize):
+
+        self.state = State(gridSize)
+        self.weights = utils.Counter()
+    
+    def think(self, percept, action, score, isTraining):
+        reward = score - self.state.score
+        self.state.updateStateFromPercepts(percept, score)
+        if isTraining:
+            previous_state = copy.deepcopy(self.state)
+            action = random.choice(self.actions)
+            self.state.updateStateFromAction(action)
+            next_state = copy.deepcopy(self.state)
+            self.update(previous_state, action, next_state, reward)
+
+        else:
+            action = self.getAction(self.state)
+            self.state.updateStateFromAction(action)
+        print(self.weights)
+        return action
+
+    def update(self, state, action, nextState, reward):
+        """
+        The parent class calls this method to observe a
+        state = action => nextState and reward transition.
+        You should do your Q-Value update here
+
+        NOTE: You should never call this method,
+        it will be called on your behalf
+
+        Q k+1(s,a) ← (1-α) Qk(s,a) + α ( R(s) + γ maxa’ Qk(s’,a’) )
+        """
+        features = self.getFeatures(state, action)
+        difference = (
+            reward
+            + self.gamma
+            * max(
+                [
+                    self.getQValue(nextState, action)
+                    for action in self.actions
+                ]
+            )
+        ) - self.getQValue(state, action)
+        for f in features:
+            self.weights[f] += self.alpha * difference * features[f]
+
+    def getQValue(self, state, action):
+        """
+        Returns Q(state, action)
+        Should return 0.0 if we never seen
+        a state or the (state, action) tuple
+        """
+        features = self.getFeatures(state, action)
+        result = 0.0
+        for f in features:
+            result += self.weights[f] * features[f]
+
+        return result
+
+    def getFeatures(self, state, action):
+        """
+        features : isGoldTaken
+                   distanceToTheStart
+                   wumpusIsKilled
+                   nbDangerousSquare1CaseAway
+        """
+
+        features = utils.Counter()
+        features["bias"] = 1.0
+
+        dx, dy = DIRECTION_TABLE[state.direction]
+        next_x, next_y = state.posx + dx, state.posy + dy
+        square = self.state.getCell(next_x,next_y)
+
+        features["isGoldGrabbed"] = 10.0 if state.goldIsGrabbed else 0.0
+        features["isWumpusKilled"] = 1.0 if state.wumpusIsKilled else 0.0
+        features["isGoldSquare"] = 1.0 if square == GOLD else 0.0
+        features["isDead"] = 1.0 if square == WUMPUS or square == PIT else 0.0
+        features["isWall"] = 1.0 if square == WALL else 0.0
+        
+
+        dist = abs(state.posx - 1) + abs(state.posy - 1)
+        features["distanceToStart"] = dist / state.size
+
+
+        features["#-of-mortal-square-1-step-away"] = sum(
+            square in [WUMPUS, PIT]
+            for square in self.state.getCellNeighbors(next_x, next_y)
+        )
+        features["#-of-dangerous-square-1-step-away"] = sum(
+            square in [WUMPUSP, PITP, WUMPUSPITP]
+            for square in self.state.getCellNeighbors(next_x, next_y)
+        )
+
+        features["#-of-visited-square-1-step-away"] = sum(
+            square == VISITED
+            for square in self.state.getCellNeighbors(next_x, next_y)
+        )
+
+        features["#-of-safe-square-1-step-away"] = sum(
+            square == SAFE
+            for square in self.state.getCellNeighbors(next_x, next_y)
+        )
+
+
+        # Normalize
+        features.divideAll(10.0)
+        return features
+
+    def getWeights(self):
+        return self.weights
 
 
 #######
@@ -477,6 +600,10 @@ class State:
         self.arrowInventory = 1
         self.score = 0
         " *** YOUR CODE HERE ***"
+
+    def __eq__(self, s2):
+        return self.posx == s2.posx and self.posy == s2.posy and self.action == s2.action and self.wumpusIsKilled == s2.wumpusIsKilled and self.goldIsGrabbed == s2.goldIsGrabbed
+    
 
     def printWorld(self):
         """
