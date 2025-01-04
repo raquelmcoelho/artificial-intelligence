@@ -10,6 +10,7 @@
 
 "Feature extractors for Pacman game states"
 
+import pprint
 from game import Directions, Actions
 import util
 
@@ -135,10 +136,13 @@ class BetterExtractor(FeatureExtractor):
         dangerous_ghosts = []
 
         for i in range(len(ghosts)):
-            if state.getGhostState(i).scaredTimer == 0:
+            if state.getGhostState(i+1).scaredTimer == 0:
                 dangerous_ghosts.append(ghosts[i])
             else:
                 safe_ghosts.append(ghosts[i])
+
+        print("\n dangerous_ghosts:", dangerous_ghosts, "\n")
+        print("\n safe_ghosts:", safe_ghosts, "\n")
 
         features = util.Counter()
 
@@ -150,10 +154,10 @@ class BetterExtractor(FeatureExtractor):
         next_x, next_y = int(x + dx), int(y + dy)
 
         # 1/ count the number of dangerous ghosts 1-step away
-        features["#-of-ghosts-1-step-away"] = sum(
-            (next_x, next_y) in Actions.getLegalNeighbors(g, walls)
-            for g in dangerous_ghosts
-        )
+        # features["#-of-ghosts-1-step-away"] = sum(
+        #     (next_x, next_y) in Actions.getLegalNeighbors(g, walls)
+        #     for g in dangerous_ghosts
+        # )
 
         # 2/ if there is no danger of ghosts then add the food feature
         # if not features["#-of-ghosts-1-step-away"] and food[next_x][next_y]:
@@ -172,16 +176,22 @@ class BetterExtractor(FeatureExtractor):
         if dist < float("inf"):
             features["nearest-capsule"] = dist / (walls.width * walls.height)
 
-        # features["#-of-safe-ghosts-1-step-away"] = sum(
-        #     (next_x, next_y) in Actions.getLegalNeighbors(g, walls) for g in safe_ghosts
-        # )
+        features["#-of-safe-ghosts-1-step-away"] = sum(
+            (next_x, next_y) in Actions.getLegalNeighbors(g, walls) 
+            for g in safe_ghosts
+        )
 
-        # features["#-of-dangerous-ghosts-1-step-away"] = sum(
-        #     (next_x, next_y) in Actions.getLegalNeighbors(g, walls) for g in dangerous_ghosts
-        # )
-        if not features["#-of-ghosts-1-step-away"] and food[next_x][next_y]:
+        features["#-of-dangerous-ghosts-1-step-away"] = sum(
+            (next_x, next_y) in Actions.getLegalNeighbors(g, walls) 
+            for g in dangerous_ghosts
+        )
+        
+        if not features["#-of-dangerous-ghosts-1-step-away"] and food[next_x][next_y]:
             features["eats-food"] = 1.0
 
         # Normalize
         features.divideAll(10.0)
+        pprint.pprint(features)
         return features
+    
+       
