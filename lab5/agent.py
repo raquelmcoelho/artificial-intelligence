@@ -562,7 +562,7 @@ class LearningAgent(Agent):
     percept = None
     actions = ["left", "right", "forward", "shoot", "grab", "climb"]
     weights = utils.Counter()
-    first = False
+    first = True
 
     def init(self, gridSize: int) -> None:
         # update weights after the last iteraction ends
