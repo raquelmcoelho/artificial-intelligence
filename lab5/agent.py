@@ -22,6 +22,7 @@ import time
 import utils
 from wumpusworld import Percept
 
+DEBUG = False
 
 #######
 ####### Exercise: Environment
@@ -363,14 +364,15 @@ class HumanAgent(Agent):
             self.isStarted = True
             return GRAB
         else:
-            reward = score - self.state.score
-            print(reward)
             self.state.updateStateFromPercepts(percept, score)
-            print("pos : " + self.state.getCell(self.state.posx, self.state.posy))
             self.state.printWorld()
-            print(f"gold : {self.state.goldIsGrabbed}")
-            print(self.state.arrowInventory)
-            print(f"x= {self.state.posx} y= {self.state.posy}")
+            if DEBUG:
+                reward = score - self.state.score
+                print(f"reward : {reward}")
+                print(f"pos : {self.state.getCell(self.state.posx, self.state.posy)}")
+                print(f"gold : {self.state.goldIsGrabbed}")
+                print(f"arrows : {self.state.arrowInventory}")
+                print(f"x: {self.state.posx} y: {self.state.posy}")
             key = input("Choose action (l, r, f, s, g, c) ? ")
             if key == "r":
                 action = RIGHT
@@ -452,9 +454,10 @@ class RationalAgent(Agent):
         ):
             square = self.state.getCell(x, y)
 
-            print(
-                f"{i} - analising neighbor {square} at position ({x}, {y}) direction = {directions_description[i]}"
-            )
+            if DEBUG:
+                print(
+                    f"{i} - analising neighbor {square} at position ({x}, {y}) direction = {directions_description[i]}"
+                )
 
             # the index matches the direction
             neighbor_direction = i
@@ -463,19 +466,23 @@ class RationalAgent(Agent):
             # switch case possible states
             if square == SAFE:
                 directions_score[neighbor_direction] = high
-                print(f"safe = {high}")
+                if DEBUG:
+                    print(f"safe = {high}")
 
             elif square == VISITED:
                 directions_score[neighbor_direction] = medium
-                print(f"visited = {medium}")
+                if DEBUG:
+                    print(f"visited = {medium}")
 
             elif square == WALL:
                 directions_score[neighbor_direction] = impossible
-                print(f"wall = {impossible}")
+                if DEBUG:
+                    print(f"wall = {impossible}")
 
             elif square == PIT:
                 directions_score[neighbor_direction] = impossible
-                print(f"pit = {impossible}")
+                if DEBUG:
+                    print(f"pit = {impossible}")
 
             elif square == WUMPUS:
                 if is_same_direction and self.state.arrowInventory > 0:
@@ -483,21 +490,26 @@ class RationalAgent(Agent):
                 elif self.state.arrowInventory > 0:
                     # impossible to go foward and kill himself because its not at the same direction
                     directions_score[neighbor_direction] = high
-                    print(f"close to wumpus = {high}")
+                    if DEBUG:
+                        print(f"close to wumpus = {high}")
                 else:
                     directions_score[neighbor_direction] = impossible
-                    print(f"no arrows = {impossible}")
+                    if DEBUG:
+                        print(f"no arrows = {impossible}")
 
             elif square == WUMPUSP or square == PITP or square == WUMPUSPITP:
                 directions_score[neighbor_direction] = little
-                print(f"danger probability = {little}")
+                if DEBUG:
+                    print(f"danger probability = {little}")
 
             # bonus
             if is_same_direction:
                 directions_score[neighbor_direction] *= bonus
-                print(f"same direction *{bonus}")
+                if DEBUG:
+                    print(f"same direction *{bonus}")
 
-            print(f"{directions_description[i]} = {directions_score[i]}")
+            if DEBUG:
+                print(f"{directions_description[i]} = {directions_score[i]}")
 
         if sum(directions_score) == 0:
             directions_score = [1] * 4
@@ -525,10 +537,12 @@ class RationalAgent(Agent):
         while not open_list.isEmpty():
             # Get the path at the top of the queue
             current_path, cost = open_list.pop()
-            print(current_path)
+            if DEBUG:
+                print(f"current path: {current_path}")
             # Get the last place of that path
             current_position, current_direction = current_path[-1]
-            print(current_position)
+            if DEBUG:
+                print(f"current position: {current_position}")
             # Check if we have reached the goal
             if current_position == (1, 1):
                 return current_path[1][1]
@@ -597,8 +611,9 @@ class LearningAgent(Agent):
         if self.state and self.percept:
             self.state.updateStateFromPercepts(self.percept, self.state.score)
             reward = self.getReward(self.previous_state, self.state, isEnd=True)
-            print(f"action : {self.previous_action}")
-            print(f"reward : {reward}")
+            if DEBUG:
+                print(f"action : {self.previous_action}")
+                print(f"reward : {reward}")
             self.update(self.previous_state, self.previous_action, self.state, reward)
 
         self.previous_action = None
@@ -648,7 +663,7 @@ class LearningAgent(Agent):
             pprint.pprint(f"reward : {reward}")
             self.update(self.previous_state, self.previous_action, self.state, reward)
         # TODO change to best action after cleaning
-        action = self.getAction(self.state)
+        action = self.getBestAction(self.state)
         self.previous_state = copy.deepcopy(self.state)
         # TODO! add this to the rapport change order of the function otherwise the state change the content of its cell to an arrow
         self.state.updateStateFromAction(action)
@@ -659,10 +674,10 @@ class LearningAgent(Agent):
 
 
 
-    def update(self, state, action, nextState, reward, debug=False):
+    def update(self, state: State, action: str, nextState: State, reward: int) -> None:
         """
         The parent class calls this method to observe a
-        state = action => nextState and reward transition.
+        state = action => nextState and reward transition. 
         You should do your Q-Value update here
 
         NOTE: You should never call this method,
@@ -679,7 +694,13 @@ class LearningAgent(Agent):
 
 
         """
-        TODO: add this new formula and explain why did we change it
+        Abstraction using Approximated Linear Functions
+
+        Q-Learning learning algorithm is used to learn the weight vector W, 
+        similar to updating Q-values when a transition s → s’ by action a 
+        occurs:
+            ∀i, wi ← wi + α[difference] . fi(s, a)
+            difference = [ R(s, a) + γ maxa’ Q(s', a')) ] - Q(s, a)
         """
 
         features = self.getFeatures(state, action)
@@ -696,7 +717,7 @@ class LearningAgent(Agent):
         for f in features:
             self.weights[f] += self.alpha * difference * features[f]
 
-        if debug:
+        if DEBUG:
             print(
                 features,
                 difference,
@@ -705,6 +726,7 @@ class LearningAgent(Agent):
                 self.computeActionFromQValues(nextState),
                 self.weights,
             )
+
         # TODO! add normalization bug to the repport
         # self.weights.normalize()
 
@@ -736,7 +758,7 @@ class LearningAgent(Agent):
         w = [1 if Q == maxQ else 0 for Q in qvalues]
         return random.choices(self.actions, weights=w, k=1)[0]
 
-    def getAction(self, state: State) -> str:
+    def getBestAction(self, state: State) -> str:
         """
         Compute the action to take in the current state.  With
         probability self.epsilon, we should take a random action and
@@ -769,7 +791,12 @@ class LearningAgent(Agent):
         # TODO! add this difficulty to define the graph states q learning at the rapport
         #return self.QValues[state, action]
 
-        # TODO explain why features
+        """
+        Abstraction using Approximated Linear Functions
+
+        Q values becomes:
+        Qf(s, a)= Σi wi . fi(s, a)
+        """
         features = self.getFeatures(state, action)
         result = 0.0
         for f in features:
@@ -894,20 +921,24 @@ class LearningAgent(Agent):
                 return -1000
             return 0
 
-        # previous_state.printWorld()
+        if DEBUG:
+            previous_state.printWorld()
         if new_state.action == CLIMB and (previous_state.posx, previous_state.posy) != (1,1):
             return -10
         if new_state.action == SHOOT and not new_state.wumpusIsKilled:
-            # print("inutile shot")
+            if DEBUG:
+                print("inutile shot")
             return -100
         elif new_state.action == SHOOT and previous_state.wumpusIsKilled:
-            # print("inutile shot")
+            if DEBUG:
+                print("inutile shot")
             return -100
         elif (
             previous_state.getCell(new_state.posx, new_state.posy) == GOLD
             and new_state.action == GRAB
         ):
-            print("gold is grabbed")
+            if DEBUG:
+                print("gold is grabbed")
             return 1000
         elif (
             not previous_state.wumpusIsKilled
@@ -915,7 +946,8 @@ class LearningAgent(Agent):
             and WUMPUS
             in previous_state.getNeighbors(previous_state.posx, previous_state.posy)
         ):
-            print("wumpus is killed")
+            if DEBUG:
+                print("wumpus is killed")
             return 100
         elif (previous_state.posx, previous_state.posy) == (
             new_state.posx,
@@ -923,11 +955,14 @@ class LearningAgent(Agent):
         ):
             return -50
         elif previous_state.getCell(new_state.posx, new_state.posy) == VISITED:
-            # print("Visited visited")
+            if DEBUG:
+                print("Visited visited")
             return -1
         elif previous_state.getCell(new_state.posx, new_state.posy) == SAFE:
-            # print("Visited safe")
+            if DEBUG:
+                print("Visited safe")
             return +5
         else:
-            # print(f"Visited other {previous_state.getCell(new_state.posx, new_state.posy)}")
+            if DEBUG:
+                print(f"Visited other {previous_state.getCell(new_state.posx, new_state.posy)}")
             return -100
