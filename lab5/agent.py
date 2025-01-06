@@ -560,7 +560,7 @@ class LearningAgent(Agent):
 
     state = None
     percept = None
-    actions = ["left", "right", "forward", "shoot", "grab", "climb"]
+    actions = ["left", "right", "forward", "shoot", "grab"]
     weights = utils.Counter()
     first = True
 
