@@ -6,11 +6,12 @@
 #
 # Artificial Intelligence 2I1AE1
 #
-
 #
 # @file agents.py
 #
 # @author Régis Clouard.
+# @author Raquel Maciel.
+# @author Alexandre Arezes.
 #
 
 from __future__ import print_function
@@ -48,20 +49,11 @@ GRAB = "grab"
 
 DIRECTION_TABLE = [(0, -1), (1, 0), (0, 1), (-1, 0)]  # North, East, South, West
 
-# x - -> +
-
-# y
-# -
-# |
-# v
-# +
-
-#   (-1,-1) (1,-1)
-#   (-1, 1) (1, 1)
-
+# x left to right increasing
+# y top to bottom increasing
 
 class State:
-    def __init__(self, gridSize):
+    def __init__(self, gridSize: int):
         self.size = gridSize
         self.worldmap = [
             [
@@ -83,7 +75,7 @@ class State:
 
         # YOUR CODE HERE
 
-    def printWorld(self):
+    def printWorld(self) -> None:
         """
         For debugging purpose.
         """
@@ -92,23 +84,23 @@ class State:
                 print(self.getCell(x, y) + " ", end=" ")
             print()
 
-    def getCell(self, x, y):
+    def getCell(self, x: int, y: int) -> str:
         return self.worldmap[x][y]
 
-    def setCell(self, x, y, value):
+    def setCell(self, x: int, y: int, value: str) -> None:
         self.worldmap[x][y] = value
 
-    def getCellNeighbors(self, x, y):
+    def getCellNeighbors(self, x: int, y: int) -> list[tuple[int, int]]:
         return [(x + dx, y + dy) for (dx, dy) in DIRECTION_TABLE]
 
-    def getNeighbors(self, x, y):
+    def getNeighbors(self, x:int, y:int) -> list[str]:
         L = []
         for a, b in self.getCellNeighbors(x, y):
             if a >= 0 and a < self.size and b >= 0 and b < self.size:
                 L.append(self.getCell(a, b))
         return L
 
-    def getForwardPosition(self, x, y, direction: int) -> tuple[int, int]:
+    def getForwardPosition(self, x: int, y: int, direction: int) -> tuple[int, int]:
         (dx, dy) = DIRECTION_TABLE[direction]
         return (x + dx, y + dy)
 
@@ -130,12 +122,10 @@ class State:
     def isGoal(self):
         return (
             (self.posx, self.posy) == (1, 1)
-            # TODO! add in the rapport
-            # and self.arrowInventory == 0
             and self.goldIsGrabbed
         )
 
-    def updateStateFromPercepts(self, percept, score):
+    def updateStateFromPercepts(self, percept: Percept, score: float):
         """
         Updates the current environment with regards to the percept information.
         """
@@ -227,9 +217,8 @@ class State:
                                 break
         return self
 
-    def updateStateFromAction(self, action):
+    def updateStateFromAction(self, action: str) -> None:
         self.action = action
-        # TODO! add this to rapport any grab would think that it had gold
         if self.action == GRAB and self.getCell(self.posx, self.posy) == GOLD:
             self.goldIsGrabbed = True
             self.setCell(self.posx, self.posy, VISITED)
@@ -240,12 +229,7 @@ class State:
         elif self.action == RIGHT:
             self.direction = (self.direction + 1) % 4
         elif self.action == FORWARD:
-            self.setCell(self.posx, self.posy, VISITED)
-
-            # TODO! add this to the rapport to bump on the wall
-            # self.posx, self.posy = self.getForwardPosition(
-            #     self.posx, self.posy, self.direction
-            # )
+            self.setCell(self.posx, self.posy, VISITED);
             x, y = self.getForwardPosition(self.posx, self.posy, self.direction)
 
             square = self.getCell(x, y)
@@ -270,7 +254,7 @@ class State:
     def getWumpusPlace(self) -> tuple[int, int] | None:
         return self.wumpusLocation
 
-    def isShootingPositionFor(self, x, y):
+    def isShootingPositionFor(self, x:int, y:int) -> bool:
         if self.direction == 0 and self.posx == x and self.posy > y:
             return True
         if self.direction == 1 and self.posy == y and self.posx < x:
@@ -328,20 +312,6 @@ def pause(text):
         input(text)
     else:
         raw_input(text)
-
-
-class DummyAgent(Agent):
-    """
-    An example of simple Wumpus hunter brain: acts randomly...
-    """
-
-    def init(self, gridSize: int) -> None:
-        pass
-
-    def think(
-        self, percept: Percept, action: str, score: float, isTraining: bool = False
-    ) -> str:
-        return random.choice(["shoot", "grab", "left", "right", "forward", "forward"])
 
 
 class HumanAgent(Agent):
@@ -441,11 +411,11 @@ class RationalAgent(Agent):
             return GRAB
 
         #  check neighbours
-        bonus = 10
         high = 10000
         medium = 100
         little = 1
         impossible = 0
+        bonus = 10
         directions_description = ["up", "right", "down", "left"]
         directions_score = [impossible, impossible, impossible, impossible]
 
@@ -465,12 +435,12 @@ class RationalAgent(Agent):
 
             # switch case possible states
             if square == SAFE:
-                directions_score[neighbor_direction] = high
+                directions_score[neighbor_direction] = high # to explore
                 if DEBUG:
                     print(f"safe = {high}")
 
             elif square == VISITED:
-                directions_score[neighbor_direction] = medium
+                directions_score[neighbor_direction] = medium # to survive
                 if DEBUG:
                     print(f"visited = {medium}")
 
@@ -487,15 +457,14 @@ class RationalAgent(Agent):
             elif square == WUMPUS:
                 if is_same_direction and self.state.arrowInventory > 0:
                     return SHOOT
-                elif self.state.arrowInventory > 0:
-                    # impossible to go foward and kill himself because its not at the same direction
+                elif not is_same_direction and self.state.arrowInventory > 0:
                     directions_score[neighbor_direction] = high
                     if DEBUG:
-                        print(f"close to wumpus = {high}")
+                        print(f"close to wumpus = {high} (to turn at wumpus direction)")
                 else:
                     directions_score[neighbor_direction] = impossible
                     if DEBUG:
-                        print(f"no arrows = {impossible}")
+                        print(f"no arrows = {impossible} (avoid wumpus)")
 
             elif square == WUMPUSP or square == PITP or square == WUMPUSPITP:
                 directions_score[neighbor_direction] = little
@@ -504,7 +473,7 @@ class RationalAgent(Agent):
 
             # bonus
             if is_same_direction:
-                directions_score[neighbor_direction] *= bonus
+                directions_score[neighbor_direction] *= bonus # avoid unecessary turns
                 if DEBUG:
                     print(f"same direction *{bonus}")
 
@@ -535,26 +504,26 @@ class RationalAgent(Agent):
         closed_list = set([initial_position])  # keep already explored positions
 
         while not open_list.isEmpty():
-            # Get the path at the top of the queue
+            # get the path at the top of the queue
             current_path, cost = open_list.pop()
             if DEBUG:
                 print(f"current path: {current_path}")
-            # Get the last place of that path
+            # get the last place of that path
             current_position, current_direction = current_path[-1]
             if DEBUG:
                 print(f"current position: {current_position}")
-            # Check if we have reached the goal
+            # check if we have reached the goal
             if current_position == (1, 1):
                 return current_path[1][1]
             else:
-                # Check were we can go from here
-                # Add the new paths (one step longer) to the queue
+                # check were we can go from here
+                # add the new paths (one step longer) to the queue
                 for i, position in enumerate(
                     self.state.getCellNeighbors(
                         current_position[0], current_position[1]
                     )
                 ):
-                    # Avoid loop!
+                    # avoid loop!
                     if position not in closed_list:
                         square = self.state.getCell(position[0], position[1])
                         if square not in [WALL, WUMPUS, WUMPUSP, WUMPUSPITP, PIT, PITP]:
@@ -577,50 +546,45 @@ class RationalAgent(Agent):
 ####### Exercise: Learning Agent
 #######
 
-# TODO! add to report
-# Reinforcement learning is more difficult when the reward is far (eg. at
-# the very end of a game).
 class LearningAgent(Agent):
     """
     Your smartest Wumpus hunter brain.
     """
 
     isLearningAgent = True
+    isTraining = False
 
-    ### OUR CODE
     alpha = 0.1  # learning factor
     gamma = 0.9  # future vision factor
     epsilon = 0.1  # exploration factor
 
-    weights = utils.Counter()
-    isTraining = False
     state = None
-    actions = ["left", "right", "forward", "shoot", "grab", "climb"]
     percept = None
+    actions = ["left", "right", "forward", "shoot", "grab", "climb"]
+    weights = utils.Counter()
 
     def init(self, gridSize: int) -> None:
-        self.state = State(gridSize)
-        self.QValues = utils.Counter()
-
-
-        ### OUR CODE
-        # TODO! add this to the rapport avoid tkinte bug
+        # avoid tkinter bug
         time.sleep(1)
-        # TODO! add the need to learn the last move at the repport
-        # Update values after
-        if self.state and self.percept:
+
+        # update weights after the last iteraction ends
+        has_antecedent = self.state != None and self.percept != None
+        if has_antecedent:
             self.state.updateStateFromPercepts(self.percept, self.state.score)
             reward = self.getReward(self.previous_state, self.state, isEnd=True)
+            previous_weights = copy.deepcopy(self.weights)
+            self.update(self.previous_state, self.previous_action, self.state, reward)
             if DEBUG:
                 print(f"action : {self.previous_action}")
                 print(f"reward : {reward}")
-            self.update(self.previous_state, self.previous_action, self.state, reward)
+                print(f"previous weights : {previous_weights}")
+                print(f"current weights : {self.weights}")
 
         self.previous_action = None
         self.state = State(gridSize)
         self.previous_state = self.state
-        # TODO! add this to the rapport
-        # removing climb to avoid bug
+
+        # removing climb as option at start to avoid tkinter bug
         self.actions = ["left", "right", "forward", "shoot", "grab"]
 
     def think(
@@ -631,8 +595,8 @@ class LearningAgent(Agent):
         Available actions are ['left', 'right', 'forward', 'shoot', 'grab', 'climb'].
         
 
-        REINFORCEMENT MEARNING AGENT
-        TODO! add this to the rapport
+        REINFORCEMENT LEARNING AGENT
+        
         function INTELLIGENT-AGENT(percept, goal) returns an action
         static: state, the agent's memory of the world state
         state ← UPDATE-STATE-FROM-PERCEPTS(state, percept)
@@ -640,7 +604,7 @@ class LearningAgent(Agent):
                 LEARN_FROM_TRANSITION(previous_state, previous_action,
                                     state, reward)
         action ← CHOOSE-BEST-ACTION(state)
-        state ← UPDATE-POLICY-STATE-FROM-ACTION(state, action)
+        state ← UPDATE-STATE-FROM-ACTION(state, action)
         previous_action ← action
         previous_state ← state
         return action
@@ -657,22 +621,17 @@ class LearningAgent(Agent):
         ### REINFORCEMENT LEARNING AGENT
         self.state.updateStateFromPercepts(percept, score)
 
-        # TODO! add this to the rapport the necessity to add our own rewards
         if self.previous_action != None:
             reward = self.getReward(self.previous_state, self.state)
-            pprint.pprint(f"reward : {reward}")
+            if DEBUG:
+                pprint.pprint(f"reward : {reward}")
             self.update(self.previous_state, self.previous_action, self.state, reward)
-        # TODO change to best action after cleaning
         action = self.getBestAction(self.state)
         self.previous_state = copy.deepcopy(self.state)
-        # TODO! add this to the rapport change order of the function otherwise the state change the content of its cell to an arrow
-        self.state.updateStateFromAction(action)
         self.previous_action = action
+        self.state.updateStateFromAction(action)
 
         return action
-
-
-
 
     def update(self, state: State, action: str, nextState: State, reward: int) -> None:
         """
@@ -683,17 +642,6 @@ class LearningAgent(Agent):
         NOTE: You should never call this method,
         it will be called on your behalf
 
-        Q k+1(s,a) ← (1-α) Qk(s,a) + α ( R(s) + γ maxa’ Qk(s’,a’) )
-        """
-
-        # TODO! add this to the rapport the difficulty to use QLearning because of the amount of differente states
-        # newValue = (1 - self.alpha) * self.getQValue(state, action) + self.alpha * (
-        #     reward + self.gamma * self.computeUtilityFromQValues(nextState)
-        # )
-        # self.setQValue(state, action, newValue)
-
-
-        """
         Abstraction using Approximated Linear Functions
 
         Q-Learning learning algorithm is used to learn the weight vector W, 
@@ -726,9 +674,6 @@ class LearningAgent(Agent):
                 self.computeActionFromQValues(nextState),
                 self.weights,
             )
-
-        # TODO! add normalization bug to the repport
-        # self.weights.normalize()
 
 
     def computeUtilityFromQValues(self, state: State) -> float:
@@ -783,15 +728,6 @@ class LearningAgent(Agent):
 
     def getQValue(self, state: State, action: str) -> float:
         """
-        Returns Q(state, action)
-        Should return 0.0 if we never seen
-        a state or the (state, action) tuple
-        """
-        # TODO! define exactly what differs a state from another
-        # TODO! add this difficulty to define the graph states q learning at the rapport
-        #return self.QValues[state, action]
-
-        """
         Abstraction using Approximated Linear Functions
 
         Q values becomes:
@@ -803,32 +739,7 @@ class LearningAgent(Agent):
             result += self.weights[f] * features[f]
 
         return result
-    
-    # TODO: explain why did we removed it: features
-    # def setQValue(self, state: State, action: str, value: float) -> None:
-    #     """
-    #     change Q(state, action)
-    #     """
-    #     # TODO! define exactly what differs a state from another
-    #     # TODO! add this difficulty to define the graph states q learning at the rapport
-    #     self.QValues[state, action] = value
 
-    # def getPolicy(self, state: State) -> str:
-    #     """
-    #     Compute the best action to take in a state.  Note that if there
-    #     are no legal actions, which is the case at the terminal state,
-    #     you should return None.
-    #     """
-    #     return self.computeActionFromQValues(state)
-
-    # def getValue(self, state: State) -> float:
-    #     """
-    #     Returns max_action Q(state,action)
-    #     where the max is over legal actions.  Note that if
-    #     there are no legal actions, which is the case at the
-    #     terminal state, you should return a value of 0.0.
-    #     """
-    #     return self.computeUtilityFromQValues(state)
 
     def getFeatures(self, state: State, action: str):
         """
@@ -841,16 +752,8 @@ class LearningAgent(Agent):
         features = utils.Counter()
         features["bias"] = 1.0
 
-        okay_cells = state.getCellsEqualTo(VISITED)
-        wall_cells = state.getCellsEqualTo(WALL)
-        interesting_cells = state.getCellsEqualTo(SAFE)
-        dangerous_cells = state.getCellsIn([PITP, WUMPUSP, WUMPUSPITP])
-        mortal_cells = state.getCellsIn([PIT, WUMPUS])
-        gold_position = state.getCellsEqualTo(GOLD)
-
         next_state = copy.deepcopy(state)
         next_state.updateStateFromAction(action)
-        x, y = state.posx, state.posy
         next_x, next_y = next_state.posx, next_state.posy
 
         # TODO: agent on wumpus : stuck
@@ -896,7 +799,7 @@ class LearningAgent(Agent):
         #     )
 
 
-      # features["shoot-wumpus"] = (
+        # features["shoot-wumpus"] = (
         #     state.getWumpusPlace() != None
         #     and state.isShootingPositionFor(
         #         state.getWumpusPlace()[0], state.getWumpusPlace()[1]
@@ -912,57 +815,66 @@ class LearningAgent(Agent):
         return features
 
 
-    def getReward(self, previous_state: State, new_state: State, isEnd=False) -> int:
-        reward = new_state.score - previous_state.score
+    def getReward(self, previous_state: State, current_state: State, isEnd=False) -> int:
+        # reward = current_state.score - previous_state.score
+
+        # state_A.action -> is the action who leads to the state_A
+
         if isEnd:
-            if new_state.action == CLIMB and previous_state.goldIsGrabbed:
-                return 500
-            elif new_state.action == FORWARD:
+            if current_state.action == CLIMB and previous_state.isGoal():
+                return 1000
+            elif current_state.action == CLIMB and not previous_state.goldIsGrabbed:
+                return -1000 
+            elif current_state.action == FORWARD: # killed because it walked to a pit/wumpus
                 return -1000
             return 0
 
         if DEBUG:
             previous_state.printWorld()
-        if new_state.action == CLIMB and (previous_state.posx, previous_state.posy) != (1,1):
+        if current_state.action == CLIMB and (previous_state.posx, previous_state.posy) != (1,1):
+            if DEBUG:
+                print("useless climb")
             return -10
-        if new_state.action == SHOOT and not new_state.wumpusIsKilled:
+        if current_state.action == SHOOT and not current_state.wumpusIsKilled:
             if DEBUG:
-                print("inutile shot")
+                print("useless shot")
             return -100
-        elif new_state.action == SHOOT and previous_state.wumpusIsKilled:
+        if current_state.action == SHOOT and previous_state.wumpusIsKilled:
             if DEBUG:
-                print("inutile shot")
+                print("useless shot")
             return -100
-        elif (
-            previous_state.getCell(new_state.posx, new_state.posy) == GOLD
-            and new_state.action == GRAB
+        if (
+            previous_state.getCell(current_state.posx, current_state.posy) == GOLD
+            and current_state.action == GRAB
         ):
             if DEBUG:
                 print("gold is grabbed")
             return 1000
-        elif (
+        if (
             not previous_state.wumpusIsKilled
-            and new_state.wumpusIsKilled
+            and current_state.wumpusIsKilled
             and WUMPUS
             in previous_state.getNeighbors(previous_state.posx, previous_state.posy)
         ):
             if DEBUG:
                 print("wumpus is killed")
-            return 100
-        elif (previous_state.posx, previous_state.posy) == (
-            new_state.posx,
-            new_state.posy,
+            return 1000
+        if (previous_state.posx, previous_state.posy) == (
+            current_state.posx,
+            current_state.posy,
         ):
+            if DEBUG:
+                print("probably useless turn")
             return -50
-        elif previous_state.getCell(new_state.posx, new_state.posy) == VISITED:
+        if previous_state.getCell(current_state.posx, current_state.posy) == VISITED:
             if DEBUG:
-                print("Visited visited")
+                print("went to visited")
             return -1
-        elif previous_state.getCell(new_state.posx, new_state.posy) == SAFE:
+        if previous_state.getCell(current_state.posx, current_state.posy) == SAFE:
             if DEBUG:
-                print("Visited safe")
+                print("went to safe")
             return +5
         else:
             if DEBUG:
-                print(f"Visited other {previous_state.getCell(new_state.posx, new_state.posy)}")
+                print(f"went to other {previous_state.getCell(current_state.posx, current_state.posy)}")
             return -100
