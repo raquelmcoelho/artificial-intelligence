@@ -562,11 +562,9 @@ class LearningAgent(Agent):
     percept = None
     actions = ["left", "right", "forward", "shoot", "grab", "climb"]
     weights = utils.Counter()
+    first = False
 
     def init(self, gridSize: int) -> None:
-        # avoid tkinter bug
-        time.sleep(0.5)
-
         # update weights after the last iteraction ends
         has_antecedent = self.state != None and self.percept != None
         if has_antecedent:
@@ -586,6 +584,7 @@ class LearningAgent(Agent):
 
         # removing climb as option at start to avoid tkinter bug
         self.actions = ["left", "right", "forward", "shoot", "grab"]
+        self.first = True
 
     def think(
         self, percept: Percept, previous_action: str, score: float, isTraining: bool
@@ -629,8 +628,12 @@ class LearningAgent(Agent):
             self.update(self.previous_state, self.previous_action, self.state, reward)
         action = self.getBestAction(self.state)
         self.previous_state = copy.deepcopy(self.state)
-        self.previous_action = action
         self.state.updateStateFromAction(action)
+        self.previous_action = action
+
+        if(self.first):
+            self.actions.append(CLIMB)
+            self.first = False
 
         return action
 
@@ -761,6 +764,10 @@ class LearningAgent(Agent):
             1,
             1,
         ) and not state.goldIsGrabbed
+        features["same-square"] = (state.posx, state.posy) == (
+            next_state.posx,
+            next_state.posy,
+        ) and not state.isGoal()
         features["safe"] = state.getCell(next_x, next_y) == SAFE
         features["dangerous"] = state.getCell(next_x, next_y) in [
             WUMPUSP,
@@ -773,7 +780,7 @@ class LearningAgent(Agent):
         features["gold_is_grabbed"] = next_state.goldIsGrabbed
         if state.goldIsGrabbed:
             distance_to_start = next_state.getManhattanDistanceTo((1, 1))
-            features["distance-to-start-after-catch-gold"] = distance_to_start / state.size ** 2
+            features["distance-to-start-after-catch-gold"] = distance_to_start
         # else:
         #     safe = state.getNearestCellEqualsTo(SAFE)
         #     if safe:
@@ -809,18 +816,13 @@ class LearningAgent(Agent):
         if isEnd:
             if current_state.action == CLIMB and previous_state.isGoal():
                 return 500 
-            elif current_state.action == CLIMB and not previous_state.goldIsGrabbed:
-                return -1000 
             elif current_state.action == FORWARD: # killed because it walked to a pit/wumpus
                 return -1000
             return 0
 
         if DEBUG:
             previous_state.printWorld()
-        if current_state.action == CLIMB and (previous_state.posx, previous_state.posy) != (1,1):
-            if DEBUG:
-                print("useless climb")
-            return -10
+
         if current_state.action == SHOOT and not current_state.wumpusIsKilled:
             if DEBUG:
                 print("useless shot")
