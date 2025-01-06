@@ -565,7 +565,7 @@ class LearningAgent(Agent):
 
     def init(self, gridSize: int) -> None:
         # avoid tkinter bug
-        time.sleep(1)
+        time.sleep(0.5)
 
         # update weights after the last iteraction ends
         has_antecedent = self.state != None and self.percept != None
@@ -625,6 +625,7 @@ class LearningAgent(Agent):
             reward = self.getReward(self.previous_state, self.state)
             if DEBUG:
                 pprint.pprint(f"reward : {reward}")
+                self.state.printWorld()
             self.update(self.previous_state, self.previous_action, self.state, reward)
         action = self.getBestAction(self.state)
         self.previous_state = copy.deepcopy(self.state)
@@ -756,15 +757,10 @@ class LearningAgent(Agent):
         next_state.updateStateFromAction(action)
         next_x, next_y = next_state.posx, next_state.posy
 
-        # TODO: agent on wumpus : stuck
-        # features["climb_without_gold"] = (state.posx, state.posy) == (
-        #     1,
-        #     1,
-        # ) and not state.goldIsGrabbed
-        # features["same-square"] = (state.posx, state.posy) == (
-        #     next_state.posx,
-        #     next_state.posy,
-        # ) and not state.isGoal()
+        features["climb_without_gold"] = (state.posx, state.posy) == (
+            1,
+            1,
+        ) and not state.goldIsGrabbed
         features["safe"] = state.getCell(next_x, next_y) == SAFE
         features["dangerous"] = state.getCell(next_x, next_y) in [
             WUMPUSP,
@@ -772,7 +768,9 @@ class LearningAgent(Agent):
             PITP,
         ]
         features["mortal"] = state.getCell(next_x, next_y) in [WUMPUS, PIT]
-        features["gold"] = next_state.goldIsGrabbed
+        features["visited"] = state.getCell(next_x, next_y) == VISITED
+
+        features["gold_is_grabbed"] = next_state.goldIsGrabbed
         if state.goldIsGrabbed:
             distance_to_start = next_state.getManhattanDistanceTo((1, 1))
             features["distance-to-start-after-catch-gold"] = distance_to_start / state.size ** 2
@@ -783,46 +781,34 @@ class LearningAgent(Agent):
         #             next_state.getManhattanDistanceTo(safe)
         #         )
 
-        # features["wumpus-in-front"] = (
-        #     state.wumpusLocation != None
-        #     and next_state.isShootingPositionFor(
-        #         state.getWumpusPlace()[0], state.getWumpusPlace()[1]
-        #     )
-        # )
 
-        # features["arrow"] = state.arrowInventory
-        # dx, dy = DIRECTION_TABLE[state.direction]
-        # if features["arrow"]:
-        #     features["wumpus"] = (
-        #         not state.wumpusIsKilled
-        #         and state.getCell(x+dx, y+dy) == WUMPUS
-        #     )
-
-
-        # features["shoot-wumpus"] = (
+        # features["kill-wumpus"] = (
         #     state.getWumpusPlace() != None
         #     and state.isShootingPositionFor(
         #         state.getWumpusPlace()[0], state.getWumpusPlace()[1]
         #     )
-        #     # and not state.wumpusIsKilled
+        #     and not state.wumpusIsKilled
         #     and state.arrowInventory > 0
         #     and action == SHOOT
         # )
 
+
         # Normalize features
-        # features.divideAll(10)
+        features.divideAll(10)
 
         return features
 
 
     def getReward(self, previous_state: State, current_state: State, isEnd=False) -> int:
-        # reward = current_state.score - previous_state.score
-
-        # state_A.action -> is the action who leads to the state_A
+        reward = current_state.score - previous_state.score
+        if DEBUG:
+            print(f"real reward { reward}")
+        
+        # NOTE state_A.action -> is the action who leads to the state_A
 
         if isEnd:
             if current_state.action == CLIMB and previous_state.isGoal():
-                return 1000
+                return 500 
             elif current_state.action == CLIMB and not previous_state.goldIsGrabbed:
                 return -1000 
             elif current_state.action == FORWARD: # killed because it walked to a pit/wumpus
@@ -839,38 +825,39 @@ class LearningAgent(Agent):
             if DEBUG:
                 print("useless shot")
             return -100
-        if current_state.action == SHOOT and previous_state.wumpusIsKilled:
+        elif current_state.action == SHOOT and previous_state.wumpusIsKilled:
             if DEBUG:
                 print("useless shot")
             return -100
-        if (
+        elif (
             previous_state.getCell(current_state.posx, current_state.posy) == GOLD
             and current_state.action == GRAB
         ):
             if DEBUG:
                 print("gold is grabbed")
             return 1000
-        if (
+        elif (
             not previous_state.wumpusIsKilled
+            and current_state.action == SHOOT
             and current_state.wumpusIsKilled
             and WUMPUS
             in previous_state.getNeighbors(previous_state.posx, previous_state.posy)
         ):
             if DEBUG:
                 print("wumpus is killed")
-            return 1000
-        if (previous_state.posx, previous_state.posy) == (
+            return 100
+        elif (previous_state.posx, previous_state.posy) == (
             current_state.posx,
             current_state.posy,
         ):
             if DEBUG:
                 print("probably useless turn")
             return -50
-        if previous_state.getCell(current_state.posx, current_state.posy) == VISITED:
+        elif previous_state.getCell(current_state.posx, current_state.posy) == VISITED:
             if DEBUG:
                 print("went to visited")
             return -1
-        if previous_state.getCell(current_state.posx, current_state.posy) == SAFE:
+        elif previous_state.getCell(current_state.posx, current_state.posy) == SAFE:
             if DEBUG:
                 print("went to safe")
             return +5
