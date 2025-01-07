@@ -546,7 +546,7 @@ class RationalAgent(Agent):
 ####### Exercise: Learning Agent
 #######
 
-class LearningAgent(Agent):
+class Learning5Agent(Agent):
     """
     Your smartest Wumpus hunter brain.
     """
@@ -585,7 +585,6 @@ class LearningAgent(Agent):
         # removing climb as option at start to avoid tkinter bug
         self.actions = ["left", "right", "forward", "shoot", "grab"]
         self.first = True
-
     def think(
         self, percept: Percept, previous_action: str, score: float, isTraining: bool
     ) -> str:
@@ -637,6 +636,53 @@ class LearningAgent(Agent):
 
         return action
 
+    def computeUtilityFromQValues(self, state: State) -> float:
+        """
+        Returns max_action Q(state,action)
+        where the max is over all legal actions. Note that if
+        there are no legal actions, which is the case at the
+        terminal state, you should return a value of 0.0.
+        """
+        if len(self.actions) == 0:
+            return 0.0
+
+        return max([self.getQValue(state, action) for action in self.actions])
+    def computeActionFromQValues(self, state: State) -> str:
+        """
+        Returns the best action to take in a state. Note that if there
+        are no legal actions, which is the case at the terminal state,
+        you should return None.
+        """
+
+        if len(self.actions) == 0:
+            return None
+
+        qvalues = [self.getQValue(state, action) for action in self.actions]
+        maxQ = self.computeUtilityFromQValues(state)
+        w = [1 if Q == maxQ else 0 for Q in qvalues]
+        return random.choices(self.actions, weights=w, k=1)[0]
+    def getBestAction(self, state: State) -> str:
+        """
+        Compute the action to take in the current state.  With
+        probability self.epsilon, we should take a random action and
+        take the best policy action otherwise.  Note that if there are
+        no legal actions, which is the case at the terminal state, you
+        should choose None as the action.
+
+        HINT: You might want to use util.flipCoin(prob)
+        """
+
+        if len(self.actions) == 0:
+            return None
+
+        if utils.flipCoin(self.epsilon):
+            qvalues = [self.getQValue(state, action) for action in self.actions]
+            maxQ = self.computeUtilityFromQValues(state)
+            w = [0.0001 if Q == maxQ else 1 for Q in qvalues]
+            return random.choices(self.actions, weights=w, k=1)[0]
+        else:
+            return self.computeActionFromQValues(state)
+        
     def update(self, state: State, action: str, nextState: State, reward: int) -> None:
         """
         The parent class calls this method to observe a
@@ -679,57 +725,6 @@ class LearningAgent(Agent):
                 self.weights,
             )
 
-
-    def computeUtilityFromQValues(self, state: State) -> float:
-        """
-        Returns max_action Q(state,action)
-        where the max is over all legal actions. Note that if
-        there are no legal actions, which is the case at the
-        terminal state, you should return a value of 0.0.
-        """
-        if len(self.actions) == 0:
-            return 0.0
-
-        return max([self.getQValue(state, action) for action in self.actions])
-
-    def computeActionFromQValues(self, state: State) -> str:
-        """
-        Returns the best action to take in a state. Note that if there
-        are no legal actions, which is the case at the terminal state,
-        you should return None.
-        """
-
-        if len(self.actions) == 0:
-            return None
-
-        qvalues = [self.getQValue(state, action) for action in self.actions]
-        maxQ = self.computeUtilityFromQValues(state)
-        w = [1 if Q == maxQ else 0 for Q in qvalues]
-        return random.choices(self.actions, weights=w, k=1)[0]
-
-    def getBestAction(self, state: State) -> str:
-        """
-        Compute the action to take in the current state.  With
-        probability self.epsilon, we should take a random action and
-        take the best policy action otherwise.  Note that if there are
-        no legal actions, which is the case at the terminal state, you
-        should choose None as the action.
-
-        HINT: You might want to use util.flipCoin(prob)
-        """
-
-        if len(self.actions) == 0:
-            return None
-
-        if utils.flipCoin(self.epsilon):
-            qvalues = [self.getQValue(state, action) for action in self.actions]
-            maxQ = self.computeUtilityFromQValues(state)
-            w = [0.0001 if Q == maxQ else 1 for Q in qvalues]
-            return random.choices(self.actions, weights=w, k=1)[0]
-        else:
-            return self.computeActionFromQValues(state)
-
-
     def getQValue(self, state: State, action: str) -> float:
         """
         Abstraction using Approximated Linear Functions
@@ -743,7 +738,6 @@ class LearningAgent(Agent):
             result += self.weights[f] * features[f]
 
         return result
-
 
     def getFeatures(self, state: State, action: str):
         """
@@ -775,9 +769,7 @@ class LearningAgent(Agent):
             PITP,
         ]
         features["mortal"] = state.getCell(next_x, next_y) in [WUMPUS, PIT]
-        features["visited"] = state.getCell(next_x, next_y) == VISITED
-
-        features["gold_is_grabbed"] = next_state.goldIsGrabbed
+        features["gold"] = next_state.goldIsGrabbed
         if state.goldIsGrabbed:
             distance_to_start = next_state.getManhattanDistanceTo((1, 1))
             features["distance-to-start-after-catch-gold"] = distance_to_start
@@ -788,23 +780,17 @@ class LearningAgent(Agent):
         #             next_state.getManhattanDistanceTo(safe)
         #         )
 
-
-        # features["kill-wumpus"] = (
-        #     state.getWumpusPlace() != None
-        #     and state.isShootingPositionFor(
+        # features["wumpus-in-front"] = (
+        #     state.wumpusLocation != None
+        #     and next_state.isShootingPositionFor(
         #         state.getWumpusPlace()[0], state.getWumpusPlace()[1]
         #     )
-        #     and not state.wumpusIsKilled
-        #     and state.arrowInventory > 0
-        #     and action == SHOOT
         # )
-
 
         # Normalize features
         features.divideAll(10)
 
         return features
-
 
     def getReward(self, previous_state: State, current_state: State, isEnd=False) -> int:
         reward = current_state.score - previous_state.score
